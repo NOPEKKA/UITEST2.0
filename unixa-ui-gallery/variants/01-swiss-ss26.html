@@ -1,0 +1,2461 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;450;500;600&family=IBM+Plex+Sans+Thai:wght@400;500&display=swap">
+<title>UNIXA Spring Summer 26</title>
+
+<style>
+/* ============================================================
+   UNIXA — DESIGN TOKENS
+   ============================================================ */
+:root{
+  /* colour */
+  --ink:#14120E;
+  --ink-soft:#37342D;
+  --stone:#6B675E;
+  --stone-mute:#96918A;
+  --paper:#F6F4EF;
+  --surface:#FCFBF8;
+  --line:#D9D4C9;
+  --line-strong:#BEB8AA;
+  --ground-1:#EDEAE2;
+  --ground-2:#E4E0D6;
+  --ground-3:#E9E6DE;
+  --ground-4:#DEDAD0;
+  --signal:#C8321C;
+  --on-signal:#FFFFFF;
+  --scrim:rgba(20,18,14,.34);
+
+  /* type */
+  --font-display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --font-sans:"IBM Plex Sans","IBM Plex Sans Thai","Helvetica Neue",Arial,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,monospace;
+
+  --fs-display:clamp(2.75rem,7.2vw,6.25rem);
+  --fs-h1:clamp(1.875rem,4.2vw,3.25rem);
+  --fs-h2:clamp(1.375rem,2.6vw,2.125rem);
+  --fs-h3:1.0625rem;
+  --fs-body:1rem;
+  --fs-small:.875rem;
+  --fs-caption:.8125rem;
+  --fs-meta:.75rem;
+  --fs-label:.6875rem;
+
+  --lh-display:.94;
+  --lh-tight:1.06;
+  --lh-snug:1.3;
+  --lh-body:1.62;
+
+  --ls-display:-.03em;
+  --ls-h:-.018em;
+  --ls-label:.13em;
+  --ls-meta:.04em;
+
+  /* space */
+  --s-1:4px;  --s-2:8px;  --s-3:12px; --s-4:16px; --s-5:24px;
+  --s-6:32px; --s-7:48px; --s-8:64px; --s-9:96px; --s-10:128px; --s-11:160px;
+
+  /* grid */
+  --grid-cols:12;
+  --grid-gap:clamp(16px,1.6vw,24px);
+  --grid-margin:clamp(20px,4vw,72px);
+  --grid-max:1600px;
+
+  /* border + radius */
+  --border:1px solid var(--line);
+  --border-strong:1px solid var(--ink);
+  --radius:0px;
+
+  /* motion */
+  --t-fast:120ms;
+  --t:200ms;
+  --t-slow:320ms;
+  --ease:cubic-bezier(.2,0,.15,1);
+
+  /* layout constants */
+  --header-h:60px;
+  color-scheme:light;
+}
+
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#F1EFE9;
+    --ink-soft:#CFCBC2;
+    --stone:#948F85;
+    --stone-mute:#6E6A62;
+    --paper:#131210;
+    --surface:#1A1917;
+    --line:#302E29;
+    --line-strong:#4A473F;
+    --ground-1:#1E1D19;
+    --ground-2:#242320;
+    --ground-3:#1A1917;
+    --ground-4:#282621;
+    --signal:#E4573C;
+    --on-signal:#131210;
+    --scrim:rgba(5,5,4,.6);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#F1EFE9;
+  --ink-soft:#CFCBC2;
+  --stone:#948F85;
+  --stone-mute:#6E6A62;
+  --paper:#131210;
+  --surface:#1A1917;
+  --line:#302E29;
+  --line-strong:#4A473F;
+  --ground-1:#1E1D19;
+  --ground-2:#242320;
+  --ground-3:#1A1917;
+  --ground-4:#282621;
+  --signal:#E4573C;
+  --on-signal:#131210;
+  --scrim:rgba(5,5,4,.6);
+  color-scheme:dark;
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--font-sans);
+  font-size:var(--fs-body);
+  line-height:var(--lh-body);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+body.is-locked{overflow:hidden;}
+h1,h2,h3,h4,p,figure,ul,ol{margin:0;}
+ul,ol{padding:0;list-style:none;}
+img,svg{max-width:100%;display:block;}
+a{color:inherit;text-decoration:none;}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;}
+input,select,textarea{font:inherit;color:inherit;}
+:focus-visible{outline:2px solid var(--signal);outline-offset:3px;}
+::selection{background:var(--signal);color:var(--on-signal);}
+
+.skip{
+  position:fixed;left:var(--s-4);top:var(--s-4);z-index:120;
+  transform:translateY(-200%);
+  background:var(--ink);color:var(--paper);
+  padding:var(--s-3) var(--s-4);
+  font-family:var(--font-mono);font-size:var(--fs-label);
+  letter-spacing:var(--ls-label);text-transform:uppercase;
+  transition:transform var(--t) var(--ease);
+}
+.skip:focus{transform:translateY(0);}
+
+/* ============================================================
+   LAYOUT PRIMITIVES
+   ============================================================ */
+.container{
+  width:100%;max-width:var(--grid-max);margin-inline:auto;
+  padding-inline:var(--grid-margin);
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(var(--grid-cols),minmax(0,1fr));
+  gap:var(--grid-gap);
+}
+.section{padding-block:var(--s-9);}
+.section--tight{padding-block:var(--s-7);}
+.section--loose{padding-block:var(--s-10);}
+.rule{height:1px;background:var(--line);border:0;}
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+.display{
+  font-family:var(--font-display);font-weight:600;
+  font-size:var(--fs-display);line-height:var(--lh-display);
+  letter-spacing:var(--ls-display);text-wrap:balance;
+}
+.h1{font-family:var(--font-display);font-weight:600;font-size:var(--fs-h1);line-height:var(--lh-tight);letter-spacing:var(--ls-h);text-wrap:balance;}
+.h2{font-family:var(--font-display);font-weight:600;font-size:var(--fs-h2);line-height:var(--lh-tight);letter-spacing:var(--ls-h);text-wrap:balance;}
+.h3{font-family:var(--font-sans);font-weight:600;font-size:var(--fs-h3);line-height:var(--lh-snug);letter-spacing:-.005em;}
+.body-lg{font-size:1.0625rem;line-height:1.58;max-width:62ch;}
+.body{max-width:66ch;}
+.small{font-size:var(--fs-small);line-height:1.55;}
+.caption{font-size:var(--fs-caption);line-height:1.45;color:var(--stone);}
+.meta{
+  font-family:var(--font-mono);font-size:var(--fs-meta);
+  letter-spacing:var(--ls-meta);color:var(--stone);
+  font-variant-numeric:tabular-nums;
+}
+.label{
+  font-family:var(--font-mono);font-size:var(--fs-label);
+  letter-spacing:var(--ls-label);text-transform:uppercase;color:var(--stone);
+}
+.label--ink{color:var(--ink);}
+.eyebrow{
+  font-family:var(--font-mono);font-size:var(--fs-label);
+  letter-spacing:var(--ls-label);text-transform:uppercase;color:var(--ink);
+  display:flex;align-items:baseline;gap:var(--s-3);
+}
+.eyebrow::after{content:"";flex:1;height:1px;background:var(--line);}
+.th{font-family:var(--font-sans);font-size:var(--fs-caption);color:var(--stone);}
+
+.link{
+  display:inline-flex;align-items:baseline;gap:var(--s-2);
+  font-family:var(--font-mono);font-size:var(--fs-label);
+  letter-spacing:var(--ls-label);text-transform:uppercase;
+  padding-bottom:2px;border-bottom:1px solid var(--ink);
+  transition:color var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease);
+}
+.link:hover{color:var(--signal);border-color:var(--signal);}
+.link__arrow{transition:transform var(--t) var(--ease);}
+.link:hover .link__arrow{transform:translateX(4px);}
+
+/* ============================================================
+   BUTTONS / CONTROLS
+   ============================================================ */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:var(--s-2);
+  min-height:48px;padding:0 var(--s-6);
+  font-family:var(--font-mono);font-size:var(--fs-label);
+  letter-spacing:var(--ls-label);text-transform:uppercase;
+  border:1px solid var(--ink);background:var(--ink);color:var(--paper);
+  transition:background var(--t) var(--ease),color var(--t) var(--ease),border-color var(--t) var(--ease);
+}
+.btn:hover{background:transparent;color:var(--ink);}
+.btn--ghost{background:transparent;color:var(--ink);}
+.btn--ghost:hover{background:var(--ink);color:var(--paper);}
+.btn--block{width:100%;}
+.btn:disabled{border-color:var(--line-strong);background:transparent;color:var(--stone-mute);cursor:not-allowed;}
+.btn--quiet{
+  min-height:40px;padding:0 var(--s-4);border:1px solid var(--line-strong);
+  background:transparent;color:var(--ink);
+}
+.btn--quiet:hover{border-color:var(--ink);background:transparent;}
+.btn--quiet[aria-pressed="true"],.btn--quiet.is-active{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+
+.icon-btn{
+  display:inline-flex;align-items:center;gap:var(--s-2);
+  min-height:44px;padding-inline:var(--s-1);
+  font-family:var(--font-mono);font-size:var(--fs-label);
+  letter-spacing:var(--ls-label);text-transform:uppercase;
+  transition:color var(--t-fast) var(--ease);
+}
+.icon-btn:hover{color:var(--signal);}
+.count{
+  font-variant-numeric:tabular-nums;
+  min-width:18px;height:18px;padding-inline:4px;
+  display:inline-flex;align-items:center;justify-content:center;
+  border:1px solid var(--line-strong);font-size:10px;
+}
+.count.is-filled{background:var(--signal);border-color:var(--signal);color:var(--on-signal);}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.utility-bar{
+  border-bottom:var(--border);
+  background:var(--paper);
+}
+.utility-bar__inner{
+  display:flex;justify-content:space-between;gap:var(--s-5);
+  padding-block:var(--s-2);overflow:hidden;white-space:nowrap;
+}
+.utility-bar .meta{color:var(--stone);}
+.utility-bar__item:last-child{text-align:right;}
+.utility-bar__toggle{
+  display:inline-flex;align-items:center;gap:var(--s-2);min-height:24px;
+  font-family:var(--font-mono);font-size:var(--fs-meta);letter-spacing:var(--ls-meta);
+  text-transform:uppercase;color:var(--ink);
+}
+.utility-bar__toggle:hover{color:var(--signal);}
+.utility-bar__state{padding:1px 6px;border:1px solid var(--line-strong);}
+.utility-bar__toggle[aria-pressed="true"] .utility-bar__state{background:var(--ink);border-color:var(--ink);color:var(--paper);}
+@media (max-width:560px){.utility-bar__note{display:none;}}
+
+.site-header{
+  position:sticky;top:0;z-index:60;
+  background:var(--paper);
+  border-bottom:1px solid transparent;
+  transition:border-color var(--t) var(--ease);
+}
+.site-header.is-scrolled{border-bottom-color:var(--line);}
+.header-inner{
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:var(--s-4);
+  min-height:var(--header-h);
+}
+.header-zone{display:flex;align-items:center;gap:var(--s-5);min-width:0;}
+.header-zone--right{justify-content:flex-end;}
+.wordmark{
+  font-family:var(--font-display);font-weight:700;
+  font-size:1.125rem;letter-spacing:.24em;text-indent:.24em;
+  text-transform:uppercase;white-space:nowrap;
+}
+.nav-primary{display:flex;gap:var(--s-5);}
+.nav-primary a{
+  font-family:var(--font-mono);font-size:var(--fs-label);
+  letter-spacing:var(--ls-label);text-transform:uppercase;
+  padding-block:var(--s-2);
+  border-bottom:1px solid transparent;
+  transition:border-color var(--t-fast) var(--ease),color var(--t-fast) var(--ease);
+}
+.nav-primary a:hover{border-bottom-color:var(--ink);}
+.nav-primary a.is-current{border-bottom-color:var(--signal);color:var(--ink);}
+.menu-btn{display:none;}
+
+@media (max-width:1023px){
+  .nav-primary{display:none;}
+  .menu-btn{display:inline-flex;}
+  .header-zone--left .icon-btn span{display:none;}
+}
+@media (max-width:560px){
+  .header-zone--right .icon-btn[data-label]{gap:var(--s-1);}
+  .utility-bar__item--second{display:none;}
+}
+
+/* ============================================================
+   FRAMES (image placeholder system)
+   ============================================================ */
+/* ratios in use: 3:4 product surfaces, 1:1 editorial, 16:9 / 4:5 campaign */
+.frame{
+  position:relative;
+  aspect-ratio:3/4;
+  background:var(--ground-1);
+  overflow:hidden;
+  max-width:100%;
+}
+.frame[data-tone="2"]{background:var(--ground-2);}
+.frame[data-tone="3"]{background:var(--ground-3);}
+.frame[data-tone="4"]{background:var(--ground-4);}
+.frame--square{aspect-ratio:1/1;}
+.frame--campaign{aspect-ratio:16/9;}
+.frame--r169{aspect-ratio:16/9;}
+.frame--r45{aspect-ratio:4/5;}
+@media (max-width:719px){.frame--campaign{aspect-ratio:4/5;}}
+.frame__art{
+  position:absolute;inset:8% 12%;
+  width:76%;height:84%;
+  color:var(--ink);
+  opacity:.4;
+}
+.frame__cap{
+  position:absolute;left:var(--s-3);bottom:var(--s-3);
+  font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--stone);
+}
+.frame__reg{position:absolute;inset:var(--s-3);pointer-events:none;color:var(--stone-mute);}
+.frame__alt{position:absolute;inset:0;opacity:0;transition:opacity var(--t-slow) var(--ease);}
+.card:hover .frame__alt,.card__media:focus-visible .frame__alt{opacity:1;}
+
+.photo{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:50% 50%;
+  transition:transform var(--t-slow) var(--ease);
+}
+.card:hover .photo{transform:scale(1.02);}
+
+.frame__hint{
+  position:absolute;left:var(--s-3);right:var(--s-3);bottom:calc(var(--s-3) + 18px);
+  display:none;pointer-events:none;
+  font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;line-height:1.4;
+  text-transform:uppercase;color:var(--ink-soft);
+}
+body.photo-edit .frame:not(.has-photo) .frame__hint{display:block;}
+body.photo-edit .frame.has-photo:hover .frame__hint,
+body.photo-edit .frame.has-photo:focus-visible .frame__hint,
+body.photo-edit .frame.has-photo.is-hover-target .frame__hint{
+  display:inline-block;right:auto;bottom:var(--s-3);
+  padding:4px 6px;background:var(--paper);color:var(--ink);
+}
+.frame--compact .frame__hint,.frame--compact .frame__cap{display:none !important;}
+
+[data-photo-target]{cursor:pointer;}
+[data-photo-target]:hover,[data-photo-target].is-hover-target{outline:1px solid var(--ink);outline-offset:-1px;}
+[data-photo-target]:focus-visible{outline:2px solid var(--signal);outline-offset:-2px;}
+.frame.is-drop{outline:2px solid var(--signal);outline-offset:-2px;}
+.frame.is-drop::after{
+  content:"Drop to set photo";
+  position:absolute;left:0;right:0;bottom:0;padding:var(--s-2) var(--s-3);
+  background:var(--signal);color:var(--on-signal);
+  font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+}
+.frame--compact.is-drop::after{content:"";padding:0;height:3px;}
+.frame__status{
+  position:absolute;left:0;right:0;bottom:0;overflow:hidden;
+  padding:var(--s-2) var(--s-3);background:var(--paper);color:var(--ink);
+  font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+}
+.frame__status::before{
+  content:"";position:absolute;top:0;left:-30%;width:30%;height:2px;background:var(--signal);
+  animation:upload 1.1s var(--ease) infinite;
+}
+.frame--compact .frame__status{font-size:0;padding:0;height:3px;}
+.frame--compact .frame__status::before{height:3px;}
+@keyframes upload{from{left:-30%;}to{left:100%;}}
+
+/* ============================================================
+   PRODUCT CARD + GRID
+   ============================================================ */
+.product-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:var(--s-7) var(--grid-gap);
+}
+.product-grid--three{grid-template-columns:repeat(3,minmax(0,1fr));}
+@media (max-width:1023px){
+  .product-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+  .product-grid--three{grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+@media (max-width:719px){
+  .product-grid,.product-grid--three{grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s-6) var(--grid-gap);}
+}
+
+.card{display:flex;flex-direction:column;gap:var(--s-3);}
+.card__media{position:relative;display:block;}
+.card__status{
+  position:absolute;top:var(--s-3);left:var(--s-3);pointer-events:none;
+  font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  padding:3px var(--s-2);background:var(--paper);color:var(--ink);
+}
+.card__status--signal{background:var(--signal);color:var(--on-signal);}
+.card__body{display:flex;flex-direction:column;gap:2px;}
+.card__row{display:flex;justify-content:space-between;align-items:baseline;gap:var(--s-3);}
+.card__name{font-size:var(--fs-small);font-weight:500;line-height:1.35;}
+.card__price{font-family:var(--font-mono);font-size:var(--fs-small);font-variant-numeric:tabular-nums;white-space:nowrap;}
+.card__sub{font-family:var(--font-mono);font-size:var(--fs-meta);letter-spacing:var(--ls-meta);color:var(--stone);text-transform:uppercase;}
+.card__colors{display:flex;gap:5px;margin-top:var(--s-2);}
+.swatch-dot{width:9px;height:9px;border:1px solid var(--line-strong);}
+.card__view{
+  font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:var(--ls-label);
+  text-transform:uppercase;color:var(--signal);
+  opacity:0;transform:translateY(-2px);
+  transition:opacity var(--t) var(--ease),transform var(--t) var(--ease);
+  margin-top:var(--s-1);
+}
+.card:hover .card__view,.card:focus-within .card__view{opacity:1;transform:translateY(0);}
+@media (max-width:719px){.card__view{display:none;}}
+
+/* ============================================================
+   HOME — HERO + EDITORIAL BLOCKS
+   ============================================================ */
+.hero{padding-block:var(--s-6) var(--s-9);}
+.hero__stage{position:relative;}
+.hero__type{display:flex;flex-direction:column;gap:var(--s-5);padding-top:var(--s-6);}
+.hero .display{font-size:clamp(2.75rem,5.4vw,5.5rem);}
+.hero__support{display:flex;flex-direction:column;gap:var(--s-4);max-width:42ch;}
+.hero__foot{
+  display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;
+  gap:var(--s-3) var(--s-5);margin-top:var(--s-5);padding-top:var(--s-4);border-top:var(--border);
+}
+.hero__spec{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-5);}
+.hero .photo-tools{margin-top:var(--s-5);}
+/* desktop: type lives in the frame's negative space, columns 2–6 */
+@media (min-width:1024px){
+  .hero__type{
+    position:absolute;top:0;bottom:0;
+    left:calc((100% - 11 * var(--grid-gap)) / 12 + var(--grid-gap));
+    width:calc((100% - 11 * var(--grid-gap)) / 12 * 5 + 4 * var(--grid-gap));
+    padding-block:var(--s-7);pointer-events:none;
+  }
+  .hero__type a{pointer-events:auto;}
+  .hero__stage.has-photo .hero__type{
+    --ink:#14120E;--ink-soft:#37342D;--stone:#55514A;--line:rgba(20,18,14,.28);
+    color:var(--ink);
+  }
+  .frame--campaign .frame__art{inset:10% 10% 10% auto;width:32%;height:80%;}
+  .frame--campaign .frame__cap,.frame--campaign .frame__hint{left:auto;right:var(--s-3);text-align:right;}
+}
+@media (max-width:719px){.hero{padding-block:var(--s-5) var(--s-8);}}
+
+.section-head{
+  display:grid;grid-template-columns:repeat(var(--grid-cols),minmax(0,1fr));
+  gap:var(--grid-gap);align-items:end;margin-bottom:var(--s-7);
+}
+.section-head__index{grid-column:1/span 1;}
+.section-head__title{grid-column:2/span 6;display:flex;flex-direction:column;gap:var(--s-3);}
+.section-head__aside{grid-column:9/span 4;display:flex;flex-direction:column;gap:var(--s-3);align-items:flex-start;}
+@media (max-width:1023px){
+  .section-head__index{grid-column:1/span 1;}
+  .section-head__title{grid-column:2/span 7;}
+  .section-head__aside{grid-column:1/-1;margin-top:var(--s-4);}
+}
+@media (max-width:719px){
+  .section-head{gap:var(--s-3);margin-bottom:var(--s-6);}
+  .section-head__index{grid-column:1/-1;}
+  .section-head__title{grid-column:1/-1;}
+}
+
+.statement{padding-block:var(--s-10);border-block:var(--border);}
+.statement__text{grid-column:2/span 8;font-family:var(--font-display);font-weight:500;
+  font-size:clamp(1.5rem,3.4vw,2.75rem);line-height:1.12;letter-spacing:-.02em;text-wrap:balance;}
+.statement__note{grid-column:11/span 2;align-self:end;}
+@media (max-width:1023px){
+  .statement__text{grid-column:1/span 8;}
+  .statement__note{grid-column:1/span 8;margin-top:var(--s-5);}
+}
+@media (max-width:719px){
+  .statement{padding-block:var(--s-8);}
+  .statement__text,.statement__note{grid-column:1/-1;}
+}
+
+.composition{align-items:start;}
+.composition__major{grid-column:1/span 7;}
+.composition__minor{grid-column:9/span 4;margin-top:var(--s-9);}
+.composition__caption{display:flex;flex-direction:column;gap:var(--s-2);margin-top:var(--s-4);}
+@media (max-width:719px){
+  .composition__major,.composition__minor{grid-column:1/-1;}
+  .composition__minor{margin-top:var(--s-6);}
+}
+
+.brand-statement__text{grid-column:1/span 7;display:flex;flex-direction:column;gap:var(--s-5);}
+.brand-statement__spec{grid-column:9/span 4;}
+@media (max-width:1023px){
+  .brand-statement__text{grid-column:1/span 8;}
+  .brand-statement__spec{grid-column:1/span 8;margin-top:var(--s-7);}
+}
+@media (max-width:719px){
+  .brand-statement__text,.brand-statement__spec{grid-column:1/-1;}
+}
+
+.spec-list{border-top:var(--border);}
+.spec-list__row{
+  display:flex;justify-content:space-between;gap:var(--s-4);
+  padding-block:var(--s-3);border-bottom:var(--border);
+}
+.spec-list__row dt{font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:var(--ls-label);
+  text-transform:uppercase;color:var(--stone);}
+.spec-list__row dd{margin:0;font-size:var(--fs-small);text-align:right;}
+
+/* ============================================================
+   NEWSLETTER
+   ============================================================ */
+.newsletter__head{grid-column:1/span 5;display:flex;flex-direction:column;gap:var(--s-3);}
+.newsletter__form{grid-column:7/span 6;align-self:end;}
+@media (max-width:1023px){
+  .newsletter__head{grid-column:1/span 8;}
+  .newsletter__form{grid-column:1/span 8;margin-top:var(--s-5);}
+}
+@media (max-width:719px){.newsletter__head,.newsletter__form{grid-column:1/-1;}}
+
+.field{display:flex;flex-direction:column;gap:var(--s-2);}
+.field__label{font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:var(--ls-label);
+  text-transform:uppercase;color:var(--stone);}
+.input{
+  width:100%;min-height:48px;padding:var(--s-3) 0;
+  background:transparent;border:0;border-bottom:1px solid var(--line-strong);
+  border-radius:var(--radius);
+  transition:border-color var(--t-fast) var(--ease);
+}
+.input::placeholder{color:var(--stone-mute);}
+.input:focus{outline:none;border-bottom-color:var(--ink);}
+.input:focus-visible{outline:2px solid var(--signal);outline-offset:3px;}
+.input[aria-invalid="true"]{border-bottom-color:var(--signal);}
+.input:disabled{color:var(--stone-mute);border-bottom-style:dashed;}
+.field__error{font-family:var(--font-mono);font-size:var(--fs-meta);color:var(--signal);min-height:1em;}
+.field__hint{font-family:var(--font-mono);font-size:var(--fs-meta);color:var(--stone);}
+.inline-form{display:flex;gap:var(--s-4);align-items:flex-end;}
+.inline-form .field{flex:1;}
+@media (max-width:560px){.inline-form{flex-direction:column;align-items:stretch;}}
+
+/* ============================================================
+   SHOP — FILTER + SORT
+   ============================================================ */
+.page-head{padding-block:var(--s-7) var(--s-6);}
+.page-head__row{display:flex;justify-content:space-between;align-items:flex-end;gap:var(--s-5);flex-wrap:wrap;}
+.breadcrumbs{display:flex;gap:var(--s-2);align-items:center;margin-bottom:var(--s-4);}
+.breadcrumbs a:hover{color:var(--signal);}
+
+.toolbar{
+  position:sticky;top:var(--header-h);z-index:40;
+  background:var(--paper);
+  border-block:var(--border);
+}
+.toolbar__inner{display:flex;justify-content:space-between;align-items:center;gap:var(--s-4);min-height:52px;}
+.toolbar__group{display:flex;align-items:center;gap:var(--s-5);}
+.toolbar__btn{
+  font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:var(--ls-label);
+  text-transform:uppercase;min-height:44px;display:inline-flex;align-items:center;gap:var(--s-2);
+  transition:color var(--t-fast) var(--ease);
+}
+.toolbar__btn:hover{color:var(--signal);}
+.toolbar__btn[aria-expanded="true"]{color:var(--signal);}
+.select{
+  font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:var(--ls-label);
+  text-transform:uppercase;background:transparent;border:0;min-height:44px;
+  padding-right:var(--s-4);cursor:pointer;
+}
+
+.filter-panel{
+  display:none;border-bottom:var(--border);background:var(--paper);
+}
+.filter-panel.is-open{display:block;}
+.filter-panel__inner{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:var(--s-6) var(--grid-gap);padding-block:var(--s-6);
+}
+.filter-group{display:flex;flex-direction:column;gap:var(--s-3);}
+.filter-group__label{font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:var(--ls-label);
+  text-transform:uppercase;color:var(--stone);padding-bottom:var(--s-2);border-bottom:var(--border);}
+.filter-options{display:flex;flex-wrap:wrap;gap:var(--s-2);}
+.chip{
+  display:inline-flex;align-items:center;gap:var(--s-2);
+  min-height:36px;padding:0 var(--s-3);
+  border:1px solid var(--line-strong);
+  font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:.08em;text-transform:uppercase;
+  transition:border-color var(--t-fast) var(--ease),background var(--t-fast) var(--ease),color var(--t-fast) var(--ease);
+}
+.chip:hover{border-color:var(--ink);}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper);}
+.chip__dot{width:10px;height:10px;border:1px solid var(--line-strong);}
+.active-filters{display:flex;flex-wrap:wrap;gap:var(--s-2);align-items:center;padding-block:var(--s-4);}
+.chip--removable[aria-pressed="true"] .chip__x{opacity:.7;}
+.filter-panel__foot{display:flex;justify-content:space-between;align-items:center;gap:var(--s-4);
+  padding-block:var(--s-4);border-top:var(--border);}
+@media (max-width:1023px){
+  .filter-panel__inner{grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+@media (max-width:719px){
+  .filter-panel{
+    position:fixed;inset:auto 0 0 0;z-index:90;display:block;
+    max-height:82vh;overflow-y:auto;border-top:var(--border-strong);
+    transform:translateY(101%);transition:transform var(--t-slow) var(--ease);
+  }
+  .filter-panel.is-open{transform:translateY(0);}
+  .filter-panel__inner{grid-template-columns:1fr;padding-block:var(--s-5);}
+  .toolbar{top:0;}
+}
+
+.results-note{padding-block:var(--s-5) var(--s-6);}
+
+/* ============================================================
+   PRODUCT DETAIL
+   ============================================================ */
+.pdp{padding-block:var(--s-6) var(--s-9);}
+.pdp__gallery{grid-column:1/span 7;display:flex;flex-direction:column;gap:var(--grid-gap);}
+.pdp__gallery-main{position:relative;}
+
+.photo-tools{
+  display:grid;grid-template-columns:auto 1fr;gap:var(--s-5) var(--s-7);align-items:start;
+  padding-top:var(--s-4);border-top:var(--border);
+}
+.photo-tools--empty{display:block;}
+.photo-tools__block{display:flex;flex-direction:column;gap:var(--s-3);min-width:0;}
+.focal-grid{display:grid;grid-template-columns:repeat(3,36px);gap:4px;}
+.focal-grid button{
+  width:36px;height:36px;display:grid;place-items:center;border:1px solid var(--line-strong);
+  transition:background var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease);
+}
+.focal-grid button::after{content:"";width:6px;height:6px;background:var(--line-strong);}
+.focal-grid button:hover{border-color:var(--ink);}
+.focal-grid button[aria-checked="true"]{background:var(--ink);border-color:var(--ink);}
+.focal-grid button[aria-checked="true"]::after{background:var(--paper);}
+.focal-grid button:disabled{opacity:.4;cursor:not-allowed;}
+.crop-row{display:flex;flex-wrap:wrap;gap:var(--s-4);align-items:flex-end;}
+.crop{margin:0;display:flex;flex-direction:column;gap:var(--s-1);}
+.photo-tools__actions{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:var(--s-3) var(--s-4);}
+.photo-tools__actions .meta{margin-right:auto;}
+@media (max-width:560px){.photo-tools{grid-template-columns:1fr;}}
+.pdp__info{grid-column:9/span 4;position:sticky;top:calc(var(--header-h) + var(--s-5));align-self:start;
+  display:flex;flex-direction:column;gap:var(--s-5);}
+@media (max-width:1023px){
+  .pdp__gallery{grid-column:1/span 8;}
+  .pdp__info{grid-column:1/span 8;position:static;margin-top:var(--s-7);}
+}
+@media (max-width:719px){
+  .pdp__gallery,.pdp__info{grid-column:1/-1;}
+}
+.pdp__head{display:flex;flex-direction:column;gap:var(--s-2);}
+.pdp__price{font-family:var(--font-mono);font-size:1.125rem;font-variant-numeric:tabular-nums;}
+.option-group{display:flex;flex-direction:column;gap:var(--s-3);}
+.option-group__head{display:flex;justify-content:space-between;align-items:baseline;gap:var(--s-3);}
+.swatch{
+  width:36px;height:36px;padding:3px;border:1px solid transparent;
+  transition:border-color var(--t-fast) var(--ease);
+}
+.swatch span{display:block;width:100%;height:100%;border:1px solid var(--line-strong);}
+.swatch[aria-pressed="true"]{border-color:var(--ink);}
+.size-grid{display:flex;flex-wrap:wrap;gap:var(--s-2);}
+.size-chip{min-width:52px;justify-content:center;}
+.size-chip:disabled{color:var(--stone-mute);border-color:var(--line);cursor:not-allowed;
+  background:repeating-linear-gradient(135deg,transparent,transparent 5px,var(--line) 5px,var(--line) 6px);}
+.stock{display:flex;align-items:center;gap:var(--s-2);}
+.stock__dot{width:7px;height:7px;background:var(--ink);}
+.stock--low .stock__dot,.stock--out .stock__dot{background:var(--signal);}
+.stock--out{color:var(--signal);}
+
+.accordion{border-top:var(--border);}
+.accordion__item{border-bottom:var(--border);}
+.accordion__trigger{
+  width:100%;display:flex;justify-content:space-between;align-items:center;gap:var(--s-4);
+  min-height:52px;font-family:var(--font-mono);font-size:var(--fs-label);
+  letter-spacing:var(--ls-label);text-transform:uppercase;text-align:left;
+}
+.accordion__sign{font-size:14px;line-height:1;}
+.accordion__panel{display:none;padding-bottom:var(--s-5);}
+.accordion__item.is-open .accordion__panel{display:block;}
+
+/* ============================================================
+   CART / CHECKOUT
+   ============================================================ */
+.cart-line{
+  display:grid;grid-template-columns:96px 1fr auto;gap:var(--grid-gap);
+  padding-block:var(--s-5);border-bottom:var(--border);align-items:start;
+}
+.cart-line__info{display:flex;flex-direction:column;gap:var(--s-2);min-width:0;}
+.cart-line__end{display:flex;flex-direction:column;align-items:flex-end;gap:var(--s-3);}
+.qty{display:inline-flex;align-items:center;border:1px solid var(--line-strong);}
+.qty button{width:36px;height:36px;display:grid;place-items:center;transition:background var(--t-fast) var(--ease);}
+.qty button:hover{background:var(--ground-1);}
+.qty__value{min-width:32px;text-align:center;font-family:var(--font-mono);font-size:var(--fs-small);font-variant-numeric:tabular-nums;}
+.remove{font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:var(--ls-label);
+  text-transform:uppercase;color:var(--stone);transition:color var(--t-fast) var(--ease);}
+.remove:hover{color:var(--signal);}
+
+.cart-page__lines{grid-column:1/span 7;}
+.cart-page__summary{grid-column:9/span 4;position:sticky;top:calc(var(--header-h) + var(--s-5));align-self:start;}
+@media (max-width:1023px){
+  .cart-page__lines{grid-column:1/span 8;}
+  .cart-page__summary{grid-column:1/span 8;position:static;margin-top:var(--s-7);}
+}
+@media (max-width:719px){.cart-page__lines,.cart-page__summary{grid-column:1/-1;}}
+.summary{border:var(--border);padding:var(--s-5);display:flex;flex-direction:column;gap:var(--s-4);}
+.summary__row{display:flex;justify-content:space-between;gap:var(--s-4);font-size:var(--fs-small);}
+.summary__row--total{padding-top:var(--s-4);border-top:var(--border);font-size:var(--fs-body);font-weight:600;}
+.summary__row span:last-child{font-family:var(--font-mono);font-variant-numeric:tabular-nums;}
+.summary__item{display:grid;grid-template-columns:48px 1fr auto;gap:var(--s-3);align-items:start;font-size:var(--fs-small);}
+.summary__item > span:last-child{font-family:var(--font-mono);font-variant-numeric:tabular-nums;}
+
+/* category tiles */
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--grid-gap);}
+@media (max-width:719px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s-6) var(--grid-gap);}}
+.tile{display:flex;flex-direction:column;gap:var(--s-3);}
+.tile__media{display:block;}
+.tile__row{display:flex;justify-content:space-between;align-items:baseline;gap:var(--s-3);}
+.tile__name{font-family:var(--font-display);font-weight:600;font-size:var(--fs-h3);letter-spacing:-.01em;
+  transition:color var(--t-fast) var(--ease);}
+.tile__name:hover{color:var(--signal);}
+
+.checkout__form{grid-column:1/span 7;display:flex;flex-direction:column;gap:var(--s-7);}
+.checkout__summary{grid-column:9/span 4;position:sticky;top:calc(var(--header-h) + var(--s-5));align-self:start;}
+@media (max-width:1023px){
+  .checkout__form{grid-column:1/span 8;}
+  .checkout__summary{grid-column:1/span 8;position:static;margin-top:var(--s-7);}
+}
+@media (max-width:719px){.checkout__form,.checkout__summary{grid-column:1/-1;}}
+.fieldset{display:flex;flex-direction:column;gap:var(--s-5);border:0;padding:0;margin:0;}
+.fieldset__legend{font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:var(--ls-label);
+  text-transform:uppercase;color:var(--stone);padding:0 0 var(--s-3);border-bottom:var(--border);width:100%;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-5);}
+@media (max-width:560px){.field-row{grid-template-columns:1fr;}}
+
+/* ============================================================
+   LAYERS — DRAWER / OVERLAY
+   ============================================================ */
+.scrim{
+  position:fixed;inset:0;z-index:80;background:var(--scrim);
+  opacity:0;visibility:hidden;transition:opacity var(--t) var(--ease),visibility var(--t);
+}
+.scrim.is-open{opacity:1;visibility:visible;}
+
+.drawer{
+  position:fixed;top:0;right:0;bottom:0;z-index:100;
+  width:min(460px,100vw);background:var(--surface);
+  border-left:var(--border);
+  display:flex;flex-direction:column;
+  transform:translateX(101%);
+  transition:transform var(--t-slow) var(--ease);
+  visibility:hidden;
+}
+.drawer.is-open{transform:translateX(0);visibility:visible;}
+.drawer__head{display:flex;justify-content:space-between;align-items:center;gap:var(--s-4);
+  padding:var(--s-5);border-bottom:var(--border);}
+.drawer__body{flex:1;overflow-y:auto;padding-inline:var(--s-5);}
+.drawer__foot{padding:var(--s-5);border-top:var(--border);display:flex;flex-direction:column;gap:var(--s-4);}
+
+.overlay{
+  position:fixed;inset:0;z-index:100;background:var(--paper);
+  display:flex;flex-direction:column;
+  opacity:0;visibility:hidden;transform:translateY(-8px);
+  transition:opacity var(--t) var(--ease),transform var(--t) var(--ease),visibility var(--t);
+  overflow-y:auto;
+}
+.overlay.is-open{opacity:1;visibility:visible;transform:translateY(0);}
+.overlay__head{display:flex;justify-content:space-between;align-items:center;gap:var(--s-4);
+  min-height:var(--header-h);border-bottom:var(--border);}
+.search-field{display:flex;align-items:center;gap:var(--s-4);padding-block:var(--s-6);border-bottom:var(--border);}
+.search-field input{
+  flex:1;min-height:56px;background:transparent;border:0;
+  font-family:var(--font-display);font-weight:500;
+  font-size:clamp(1.5rem,4vw,2.5rem);letter-spacing:-.02em;
+}
+.search-field input:focus{outline:none;}
+.search-results{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--s-6) var(--grid-gap);
+  padding-block:var(--s-6) var(--s-9);}
+@media (max-width:1023px){.search-results{grid-template-columns:repeat(3,minmax(0,1fr));}}
+@media (max-width:719px){.search-results{grid-template-columns:repeat(2,minmax(0,1fr));}}
+.suggest{display:flex;flex-wrap:wrap;gap:var(--s-2);padding-block:var(--s-5);}
+
+.menu-list{display:flex;flex-direction:column;padding-block:var(--s-5);}
+.menu-list a{
+  display:flex;justify-content:space-between;align-items:center;gap:var(--s-4);
+  padding-block:var(--s-4);border-bottom:var(--border);
+  font-family:var(--font-display);font-weight:500;font-size:1.5rem;letter-spacing:-.02em;
+}
+.menu-list a .meta{font-family:var(--font-mono);}
+.menu-sub{display:flex;flex-wrap:wrap;gap:var(--s-2);padding-block:var(--s-5);}
+
+/* ============================================================
+   FEEDBACK STATES
+   ============================================================ */
+.toast{
+  position:fixed;left:50%;bottom:var(--s-6);z-index:110;
+  transform:translate(-50%,calc(100% + var(--s-6)));
+  background:var(--ink);color:var(--paper);
+  padding:var(--s-3) var(--s-5);
+  font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:var(--ls-label);text-transform:uppercase;
+  transition:transform var(--t-slow) var(--ease);
+  max-width:calc(100vw - var(--s-8));
+  line-height:1.5;text-align:center;
+}
+.toast.is-open{transform:translate(-50%,0);}
+.toast--error{background:var(--signal);color:var(--on-signal);}
+.empty-state{
+  display:flex;flex-direction:column;align-items:flex-start;gap:var(--s-4);
+  padding-block:var(--s-9);border-top:var(--border);
+}
+.skeleton{background:var(--ground-1);position:relative;overflow:hidden;}
+.skeleton::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,var(--ground-3),transparent);
+  animation:sweep 1.1s linear infinite;
+}
+@keyframes sweep{from{transform:translateX(-100%);}to{transform:translateX(100%);}}
+.skeleton-line{height:10px;background:var(--ground-2);}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.site-footer{border-top:var(--border);padding-block:var(--s-8) var(--s-5);margin-top:var(--s-9);}
+.footer-cols{display:grid;grid-template-columns:repeat(var(--grid-cols),minmax(0,1fr));gap:var(--s-7) var(--grid-gap);}
+.footer-brand{grid-column:1/span 3;display:flex;flex-direction:column;gap:var(--s-3);}
+.footer-col{grid-column:span 2;display:flex;flex-direction:column;gap:var(--s-3);}
+.footer-col ul{display:flex;flex-direction:column;gap:var(--s-2);}
+.footer-col a{font-size:var(--fs-small);color:var(--ink-soft);transition:color var(--t-fast) var(--ease);}
+.footer-col a:hover{color:var(--signal);}
+.footer-note{grid-column:11/span 2;}
+@media (max-width:1023px){
+  .footer-brand{grid-column:1/span 8;}
+  .footer-col{grid-column:span 4;}
+  .footer-note{grid-column:1/span 8;}
+}
+@media (max-width:719px){
+  .footer-brand,.footer-note{grid-column:1/-1;}
+  .footer-col{grid-column:span 6;}
+}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;gap:var(--s-4);flex-wrap:wrap;
+  margin-top:var(--s-8);padding-top:var(--s-4);border-top:var(--border);}
+
+/* ============================================================
+   GRID OVERLAY (design utility)
+   ============================================================ */
+.grid-overlay{
+  position:fixed;inset:0;z-index:70;pointer-events:none;display:none;
+}
+body.grid-on .grid-overlay{display:block;}
+.grid-overlay__inner{
+  height:100%;width:100%;max-width:var(--grid-max);margin-inline:auto;
+  padding-inline:var(--grid-margin);
+  display:grid;grid-template-columns:repeat(var(--grid-cols),minmax(0,1fr));gap:var(--grid-gap);
+}
+.grid-overlay__col{background:color-mix(in srgb,var(--signal) 9%,transparent);}
+@media (max-width:1023px){
+  .grid-overlay__inner{grid-template-columns:repeat(8,minmax(0,1fr));}
+  .grid-overlay__col:nth-child(n+9){display:none;}
+}
+@media (max-width:719px){
+  .grid-overlay__inner{grid-template-columns:repeat(4,minmax(0,1fr));}
+  .grid-overlay__col:nth-child(n+5){display:none;}
+}
+
+/* ============================================================
+   MOTION PREFERENCE
+   ============================================================ */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms !important;animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;scroll-behavior:auto !important;
+  }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="utility-bar">
+  <div class="container utility-bar__inner">
+    <span class="meta utility-bar__item">SHIPS FROM BANGKOK / 2&ndash;4 DAYS</span>
+    <span class="meta utility-bar__item utility-bar__item--second" id="utilityRight">FREE SHIPPING OVER &#3647;2,500</span>
+  </div>
+</div>
+
+<header class="site-header" id="siteHeader">
+  <div class="container header-inner">
+    <div class="header-zone header-zone--left">
+      <button class="icon-btn menu-btn" id="menuOpen" aria-expanded="false" aria-controls="menuOverlay">Menu</button>
+      <nav class="nav-primary" id="navPrimary" aria-label="Primary"></nav>
+    </div>
+    <div class="header-zone header-zone--center">
+      <a class="wordmark" href="#/" aria-label="UNIXA — home">UNIXA</a>
+    </div>
+    <div class="header-zone header-zone--right">
+      <button class="icon-btn" id="searchOpen" aria-expanded="false" aria-controls="searchOverlay">Search</button>
+      <a class="icon-btn" href="#/account">Account</a>
+      <button class="icon-btn" id="cartOpen" aria-expanded="false" aria-controls="cartDrawer">
+        Cart <span class="count" id="cartCount" aria-hidden="true">0</span>
+        <span class="visually-hidden" id="cartCountSr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;">0 items</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main" tabindex="-1"></main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-cols">
+      <div class="footer-brand">
+        <span class="wordmark">UNIXA</span>
+        <p class="caption">Cut, form and material for daily use. Designed in Bangkok, produced in Thailand.</p>
+      </div>
+      <div class="footer-col">
+        <h2 class="label">Shop</h2>
+        <ul>
+          <li><a href="#/shop?sort=newest">New Arrivals</a></li>
+          <li><a href="#/shop?category=outerwear">Outerwear</a></li>
+          <li><a href="#/shop?category=tops">Tops</a></li>
+          <li><a href="#/shop?category=bottoms">Bottoms</a></li>
+          <li><a href="#/shop?category=accessories">Accessories</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h2 class="label">About</h2>
+        <ul>
+          <li><a href="#/about">The Label</a></li>
+          <li><a href="#/about">Materials</a></li>
+          <li><a href="#/editorial">Editorial</a></li>
+          <li><a href="#/shop?collection=SS26">SS26 Collection</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h2 class="label">Help</h2>
+        <ul>
+          <li><a href="#/about">Shipping</a></li>
+          <li><a href="#/about">Returns</a></li>
+          <li><a href="#/about">Size Guide</a></li>
+          <li><a href="#/about">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-note">
+        <h2 class="label">Legal</h2>
+        <ul style="display:flex;flex-direction:column;gap:var(--s-2);margin-top:var(--s-3);">
+          <li><a class="small" href="#/about">Terms</a></li>
+          <li><a class="small" href="#/about">Privacy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="meta">&copy; 2026 UNIXA — BANGKOK</span>
+      <div style="display:flex;gap:var(--s-5);align-items:center;">
+        <button class="toolbar__btn" id="gridToggle" aria-pressed="false">Grid <span class="meta">[G]</span></button>
+        <span class="meta">TH / EN &middot; THB</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="scrim" id="scrim"></div>
+
+<aside class="drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-label="Shopping bag" aria-hidden="true">
+  <div class="drawer__head">
+    <h2 class="label label--ink">Bag <span id="drawerCount" class="meta"></span></h2>
+    <button class="icon-btn" data-close-layer="cartDrawer">Close</button>
+  </div>
+  <div class="drawer__body" id="cartDrawerBody"></div>
+  <div class="drawer__foot" id="cartDrawerFoot"></div>
+</aside>
+
+<div class="overlay" id="searchOverlay" role="dialog" aria-modal="true" aria-label="Search" aria-hidden="true">
+  <div class="container">
+    <div class="overlay__head">
+      <span class="label label--ink">Search</span>
+      <button class="icon-btn" data-close-layer="searchOverlay">Close</button>
+    </div>
+    <div class="search-field">
+      <label class="label" for="searchInput">Q</label>
+      <input id="searchInput" type="search" autocomplete="off" placeholder="Wool, trouser, SS26&hellip;" aria-describedby="searchState">
+    </div>
+    <p class="meta" id="searchState" aria-live="polite" style="padding-top:var(--s-4);"></p>
+    <div id="searchSuggest"></div>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<div class="overlay" id="menuOverlay" role="dialog" aria-modal="true" aria-label="Menu" aria-hidden="true">
+  <div class="container">
+    <div class="overlay__head">
+      <span class="label label--ink">Menu</span>
+      <button class="icon-btn" data-close-layer="menuOverlay">Close</button>
+    </div>
+    <nav class="menu-list" id="menuList" aria-label="Mobile"></nav>
+    <div class="menu-sub" id="menuSub"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<input type="file" id="photoFile" accept="image/*" hidden>
+
+<div class="grid-overlay" aria-hidden="true">
+  <div class="grid-overlay__inner">
+    <i class="grid-overlay__col"></i><i class="grid-overlay__col"></i><i class="grid-overlay__col"></i>
+    <i class="grid-overlay__col"></i><i class="grid-overlay__col"></i><i class="grid-overlay__col"></i>
+    <i class="grid-overlay__col"></i><i class="grid-overlay__col"></i><i class="grid-overlay__col"></i>
+    <i class="grid-overlay__col"></i><i class="grid-overlay__col"></i><i class="grid-overlay__col"></i>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   CONTENT MODEL
+   ============================================================ */
+const COLORWAYS = {
+  ink:{label:"Ink",hex:"#14120E"},
+  paper:{label:"Paper",hex:"#EFEBE2"},
+  stone:{label:"Stone",hex:"#B9B2A4"},
+  olive:{label:"Field Olive",hex:"#5B5A42"},
+  navy:{label:"Deep Navy",hex:"#242B38"},
+  signal:{label:"Signal Red",hex:"#C8321C"}
+};
+const SIZES = ["XS","S","M","L","XL"];
+const SHOE = ["39","40","41","42","43","44"];
+
+const PRODUCTS = [
+  {id:"p01",slug:"structured-wool-blazer",kind:"jacket",sku:"SS26-014",name:"Structured Wool Blazer",nameTh:"เบลเซอร์ขนสัตว์ทรงสตรัคเจอร์",category:"outerwear",collection:"SS26",price:4200,colors:["ink","stone"],sizes:SIZES,material:"72% wool, 26% polyester, 2% elastane",materialFamily:"wool",care:"Dry clean only",fit:"True to size. Structured shoulder, straight through the body.",description:"Single-breasted blazer cut from mid-weight wool suiting. Structured shoulder, straight body, no vent.",availability:"in-stock",featured:true,newArrival:true},
+  {id:"p02",slug:"raw-edge-overcoat",kind:"coat",sku:"SS26-021",name:"Raw-Edge Overcoat",nameTh:"โอเวอร์โค้ทขอบดิบ",category:"outerwear",collection:"SS26",price:5800,colors:["navy","ink"],sizes:SIZES,material:"80% wool, 20% nylon",materialFamily:"wool",care:"Dry clean only",fit:"Oversized. Size down for a closer fit.",description:"Long-line overcoat with an unfinished front edge. Dropped shoulder, two welt pockets, half-belt back.",availability:"low-stock",featured:true,newArrival:true},
+  {id:"p03",slug:"field-jacket-04",kind:"jacket",sku:"SS26-009",name:"Field Jacket 04",nameTh:"แจ็คเก็ตฟิลด์ 04",category:"outerwear",collection:"SS26",price:3600,colors:["olive","ink"],sizes:SIZES,material:"100% cotton canvas, washed",materialFamily:"cotton",care:"Machine wash cold, line dry",fit:"Regular.",description:"Four-pocket field jacket in washed cotton canvas. Corozo buttons, adjustable cuff tab.",availability:"in-stock",featured:false,newArrival:false},
+  {id:"p04",slug:"poplin-shirt",kind:"shirt",sku:"SS26-002",name:"Poplin Shirt",nameTh:"เชิ้ตป๊อปลิน",category:"tops",collection:"SS26",price:1650,colors:["paper","ink","signal"],sizes:SIZES,material:"100% cotton poplin",materialFamily:"cotton",care:"Machine wash cold",fit:"Regular.",description:"Crisp cotton poplin shirt with a single chest pocket. Straight hem, mother-of-pearl buttons.",availability:"in-stock",featured:true,newArrival:false},
+  {id:"p05",slug:"compact-jersey-tee",kind:"tee",sku:"SS26-001",name:"Compact Jersey Tee",nameTh:"เสื้อยืดเจอร์ซีย์",category:"tops",collection:"SS26",price:890,colors:["ink","paper","stone","signal"],sizes:SIZES,material:"100% combed cotton, 220gsm",materialFamily:"cotton",care:"Machine wash cold",fit:"Boxy. Order true to size.",description:"Heavyweight compact jersey tee. Crew neck, boxy body, dropped shoulder seam.",availability:"in-stock",featured:true,newArrival:false},
+  {id:"p06",slug:"merino-crew-knit",kind:"knit",sku:"SS26-011",name:"Merino Crew Knit",nameTh:"เสื้อไหมพรมเมอริโน",category:"tops",collection:"SS26",price:2450,colors:["stone","navy","olive"],sizes:SIZES,material:"100% extra-fine merino wool",materialFamily:"wool",care:"Hand wash cold, dry flat",fit:"Regular.",description:"Fine-gauge merino crewneck. Ribbed collar, cuff and hem, fully fashioned shoulder.",availability:"in-stock",featured:false,newArrival:true},
+  {id:"p07",slug:"mock-neck-knit",kind:"knit",sku:"SS26-012",name:"Mock Neck Knit",nameTh:"เสื้อคอตั้งไหมพรม",category:"tops",collection:"SS26",price:2200,colors:["ink","paper"],sizes:SIZES,material:"55% cotton, 45% wool",materialFamily:"wool",care:"Hand wash cold, dry flat",fit:"Slim.",description:"Lightweight cotton-wool mock neck. Close fit through the body, ribbed stand collar.",availability:"out-of-stock",featured:false,newArrival:false},
+  {id:"p08",slug:"tapered-wool-trouser",kind:"trousers",sku:"SS26-017",name:"Tapered Wool Trouser",nameTh:"กางเกงขนสัตว์ทรงเรียว",category:"bottoms",collection:"SS26",price:2900,colors:["ink","stone","navy"],sizes:SIZES,material:"96% wool, 4% elastane",materialFamily:"wool",care:"Dry clean only",fit:"Tapered. Sits at the natural waist.",description:"Mid-rise tapered trouser in stretch wool suiting. Single pleat, hidden hook closure.",availability:"in-stock",featured:true,newArrival:false},
+  {id:"p09",slug:"wide-leg-canvas-pant",kind:"trousers",sku:"SS26-018",name:"Wide-Leg Canvas Pant",nameTh:"กางเกงผ้าใบขาบาน",category:"bottoms",collection:"SS26",price:2350,colors:["olive","paper"],sizes:SIZES,material:"100% cotton canvas",materialFamily:"cotton",care:"Machine wash cold",fit:"Wide. Relaxed through hip and leg.",description:"Heavy cotton canvas trouser with a wide, uncuffed leg. Deep side pockets, back welt pocket.",availability:"in-stock",featured:false,newArrival:true},
+  {id:"p10",slug:"column-midi-skirt",kind:"skirt",sku:"SS26-023",name:"Column Midi Skirt",nameTh:"กระโปรงทรงกระบอก",category:"bottoms",collection:"SS26",price:2100,colors:["ink","stone"],sizes:SIZES,material:"70% viscose, 30% wool",materialFamily:"viscose",care:"Dry clean only",fit:"Straight, high rise.",description:"Straight column skirt falling below the knee. Concealed back zip, unlined.",availability:"in-stock",featured:false,newArrival:false},
+  {id:"p11",slug:"pleated-utility-short",kind:"skirt",sku:"SS26-019",name:"Pleated Utility Short",nameTh:"กางเกงขาสั้นพลีท",category:"bottoms",collection:"SS26",price:1450,colors:["olive","ink"],sizes:SIZES,material:"100% cotton twill",materialFamily:"cotton",care:"Machine wash cold",fit:"Regular.",description:"Knee-length short with box pleats front and back. Two cargo pockets, adjustable waist tab.",availability:"in-stock",featured:false,newArrival:false},
+  {id:"p12",slug:"bias-slip-dress",kind:"dress",sku:"SS26-026",name:"Bias Slip Dress",nameTh:"เดรสสลิปทรงเฉียง",category:"women",collection:"SS26",price:2650,colors:["ink","signal","paper"],sizes:SIZES,material:"100% viscose satin",materialFamily:"viscose",care:"Hand wash cold, dry flat",fit:"Bias cut. Fluid through the body.",description:"Bias-cut slip dress in washed satin. Adjustable straps, midi length.",availability:"in-stock",featured:true,newArrival:true},
+  {id:"p13",slug:"structured-canvas-tote",kind:"tote",sku:"SS26-031",name:"Structured Canvas Tote",nameTh:"กระเป๋าโทตผ้าใบ",category:"accessories",collection:"SS26",price:1350,colors:["ink","paper","olive"],sizes:["ONE SIZE"],material:"Waxed cotton canvas, leather trim",materialFamily:"leather",care:"Wipe clean",fit:"One size. 38 × 30 × 14 cm.",description:"Structured tote in waxed canvas with leather handles. Internal zip pocket, magnetic close.",availability:"in-stock",featured:false,newArrival:false},
+  {id:"p14",slug:"leather-chelsea-boot",kind:"boot",sku:"SS26-034",name:"Leather Chelsea Boot",nameTh:"บูทเชลซีหนัง",category:"accessories",collection:"SS26",price:3950,colors:["ink","stone"],sizes:SHOE,material:"Full-grain leather, leather sole",materialFamily:"leather",care:"Condition regularly",fit:"True to size.",description:"Chelsea boot in vegetable-tanned leather. Elastic side gusset, rubber heel guard.",availability:"low-stock",featured:true,newArrival:false},
+  {id:"p15",slug:"essential-tee",kind:"tee",sku:"ES-001",name:"Essential Tee",nameTh:"เสื้อยืดเบสิก",category:"tops",collection:"Essential",price:690,colors:["ink","paper","stone","navy","olive"],sizes:SIZES,material:"100% cotton, garment washed",materialFamily:"cotton",care:"Machine wash cold",fit:"Regular.",description:"The base layer. Mid-weight single jersey, no branding, garment washed.",availability:"in-stock",featured:false,newArrival:false},
+  {id:"p16",slug:"essential-trouser",kind:"trousers",sku:"ES-004",name:"Essential Trouser",nameTh:"กางเกงเบสิก",category:"bottoms",collection:"Essential",price:1950,colors:["ink","navy","stone"],sizes:SIZES,material:"98% cotton, 2% elastane",materialFamily:"cotton",care:"Machine wash cold",fit:"Straight.",description:"Everyday straight trouser in brushed cotton twill. No pleat, welt back pockets.",availability:"in-stock",featured:false,newArrival:false}
+];
+
+const CATEGORIES = [
+  {id:"outerwear",label:"Outerwear"},
+  {id:"tops",label:"Tops"},
+  {id:"bottoms",label:"Bottoms"},
+  {id:"women",label:"Women"},
+  {id:"accessories",label:"Accessories"}
+];
+const COLLECTIONS = [{id:"SS26",label:"Spring Summer 26"},{id:"Essential",label:"Essential Series"}];
+const MATERIALS = [{id:"cotton",label:"Cotton"},{id:"wool",label:"Wool"},{id:"leather",label:"Leather"},{id:"viscose",label:"Viscose"}];
+const PRICE_BANDS = [
+  {id:"u1000",label:"Under ฿1,000",test:p=>p.price<1000},
+  {id:"1000-2500",label:"฿1,000–2,500",test:p=>p.price>=1000&&p.price<2500},
+  {id:"2500-5000",label:"฿2,500–5,000",test:p=>p.price>=2500&&p.price<5000},
+  {id:"o5000",label:"Over ฿5,000",test:p=>p.price>=5000}
+];
+const SORTS = [
+  {id:"featured",label:"Featured"},
+  {id:"newest",label:"Newest"},
+  {id:"price-asc",label:"Price low → high"},
+  {id:"price-desc",label:"Price high → low"}
+];
+const EDITORIALS = [
+  {slug:"cut-form-material",title:"Cut / Form / Material",date:"2026.02",pid:"p01",standfirst:"Three questions asked of every piece before it enters the line."},
+  {slug:"the-everyday-object",title:"The Everyday Object",date:"2026.01",pid:"p13",standfirst:"On designing for repetition rather than occasion."},
+  {slug:"grid-and-garment",title:"Grid and Garment",date:"2025.12",pid:"p08",standfirst:"Pattern-making and typesetting share one discipline: proportion."}
+];
+
+/* ============================================================
+   TECHNICAL FLAT PLACEHOLDERS
+   ============================================================ */
+const SHAPES = {
+  jacket:'<path d="M95 58 L128 40 L150 54 L172 40 L205 58 L228 96 L204 112 L196 94 L196 322 L104 322 L104 94 L96 112 L72 96 Z"/><path d="M128 40 L150 100 L172 40"/><path d="M150 100 L150 322" stroke-dasharray="3 5"/>',
+  coat:'<path d="M92 50 L128 34 L150 50 L172 34 L208 50 L236 100 L206 118 L198 96 L212 330 L88 330 L102 96 L94 118 L64 100 Z"/><path d="M128 34 L150 96 L172 34"/><path d="M150 96 L150 330" stroke-dasharray="3 5"/><rect x="130" y="176" width="12" height="16"/><rect x="158" y="176" width="12" height="16"/>',
+  shirt:'<path d="M100 62 L128 46 L150 62 L172 46 L200 62 L222 96 L200 110 L192 92 L192 316 L108 316 L108 92 L100 110 L78 96 Z"/><path d="M136 46 L150 66 L164 46"/><path d="M150 66 L150 316" stroke-dasharray="3 5"/>',
+  tee:'<path d="M104 70 L130 54 L150 68 L170 54 L196 70 L214 98 L194 110 L188 94 L188 306 L112 306 L112 94 L106 110 L86 98 Z"/><path d="M136 54 L150 76 L164 54"/>',
+  knit:'<path d="M96 66 L126 48 L150 64 L174 48 L204 66 L226 100 L202 116 L194 96 L194 314 L106 314 L106 96 L98 116 L74 100 Z"/><path d="M132 48 L150 70 L168 48"/><path d="M106 124 L194 124" stroke-dasharray="2 6"/><path d="M106 154 L194 154" stroke-dasharray="2 6"/>',
+  trousers:'<path d="M104 40 L196 40 L204 96 L164 96 L168 322 L138 322 L150 120 L132 322 L102 322 L106 96 L96 96 Z"/><path d="M150 96 L150 122" stroke-dasharray="3 5"/>',
+  skirt:'<path d="M112 46 L188 46 L206 300 L94 300 Z"/><path d="M150 46 L150 300" stroke-dasharray="2 6"/><path d="M130 46 L118 300" stroke-dasharray="2 6"/><path d="M170 46 L182 300" stroke-dasharray="2 6"/>',
+  tote:'<path d="M100 130 L200 130 L212 300 L88 300 Z"/><path d="M118 130 C118 96 128 78 150 78 C172 78 182 96 182 130"/>',
+  boot:'<path d="M118 40 L182 40 L182 190 L214 240 L214 266 L96 266 L96 220 L118 200 Z"/><path d="M118 84 L182 84"/><path d="M118 124 L182 124"/>',
+  dress:'<path d="M108 58 L132 44 L150 58 L168 44 L192 58 L206 94 L188 108 L182 92 L196 320 L104 320 L118 92 L112 108 L94 94 Z"/><path d="M136 44 L150 62 L164 44"/>'
+};
+
+function flatArt(kind){
+  return '<svg class="frame__art" viewBox="0 0 300 380" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true">'+(SHAPES[kind]||SHAPES.tee)+'</svg>';
+}
+function regMarks(){
+  return '<svg class="frame__reg" viewBox="0 0 100 100" preserveAspectRatio="none" fill="none" stroke="currentColor" stroke-width=".4" aria-hidden="true">'+
+    '<path d="M0 0 L0 6 M0 0 L6 0"/><path d="M100 0 L100 6 M100 0 L94 0"/>'+
+    '<path d="M0 100 L0 94 M0 100 L6 100"/><path d="M100 100 L100 94 M100 100 L94 100"/></svg>';
+}
+/* ============================================================
+   PHOTO STATE + MEDIA SLOTS
+   photo: { url, width, height, focalPoint } | null  — per product
+   ============================================================ */
+const LOCALE = "en";
+const localName = p => (LOCALE==="th" && p.nameTh) ? p.nameTh : p.name;
+const IS_MAC = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+const PASTE_KEY = IS_MAC ? "Cmd+V" : "Ctrl+V";
+const TOUCH = !!(window.matchMedia && matchMedia("(hover: none)").matches);
+
+const PHOTOS = {};   // what renders once confirmed
+const SNAP = {};     // last value the store confirmed
+const PENDING = {};  // local preview while an upload is in flight
+const FOCAL_DIRTY = {};
+let PHOTO_MODE = (window.claude && typeof window.claude.use === "function") ? "connecting" : "local";
+let DB = null, ASSETS = null;
+let editPref = true;
+try{ editPref = localStorage.getItem("unixa.photoEdit") !== "off"; }catch(e){}
+const canManagePhotos = () => PHOTO_MODE==="local" || PHOTO_MODE==="editor";
+const isEditing = () => canManagePhotos() && editPref;
+const photoFor = pid => PENDING[pid] || PHOTOS[pid] || null;
+
+function sanitizePhoto(d){
+  if(!d || typeof d!=="object") return null;
+  if(typeof d.url!=="string" || !/^\/_blob\/[A-Za-z0-9_-]{8,64}$/.test(d.url)) return null;
+  const w = Number(d.width), h = Number(d.height);
+  if(!(w>0 && h>0 && w<20000 && h<20000)) return null;
+  const fp = (typeof d.focalPoint==="string" && /^\d{1,3}% \d{1,3}%$/.test(d.focalPoint)) ? d.focalPoint : "50% 50%";
+  return {url:d.url, width:Math.round(w), height:Math.round(h), focalPoint:fp};
+}
+
+function hintText(hasPhoto){
+  if(TOUCH) return hasPhoto ? "Tap to replace photo" : "Tap to add a photo";
+  return hasPhoto ? "Replace — drop, paste "+PASTE_KEY+" or click" : "Drop an image, or paste with "+PASTE_KEY;
+}
+function targetLabel(p,hasPhoto,ctx){
+  return (hasPhoto?"Replace photo for ":"Add photo for ")+localName(p)+(ctx?" ("+ctx+")":"")+
+    ". Drag an image here, paste with "+PASTE_KEY+", or press Enter to choose a file.";
+}
+
+const RATIO_CLASS = {portrait:"",square:" frame--square",campaign:" frame--campaign",r169:" frame--r169",r45:" frame--r45"};
+
+function slotInner(p,ds){
+  const ph = photoFor(p.id);
+  let html;
+  if(ph){
+    html = '<img class="photo" src="'+esc(ph.url)+'" alt="'+esc(localName(p))+'" width="'+ph.width+'" height="'+ph.height+
+      '" style="object-position:'+esc(ph.focalPoint)+'"'+(ds.eager==="1"?' fetchpriority="high"':' loading="lazy"')+' decoding="async">';
+  }else{
+    const cap = ds.caption ? '<span class="frame__cap">'+esc(ds.caption)+'</span>' : "";
+    html = flatArt(p.kind)+regMarks()+cap;
+    if(ds.alt==="1"){
+      const alt = (Number(ds.tone)%4)+1;
+      html += '<div class="frame frame__alt" data-tone="'+alt+'" aria-hidden="true">'+flatArt(p.kind)+regMarks()+
+        (ds.caption?'<span class="frame__cap">'+esc(ds.caption.replace(/01$/,"02"))+'</span>':"")+'</div>';
+    }
+  }
+  if(ds.passive!=="1") html += '<span class="frame__hint" aria-hidden="true">'+esc(hintText(!!ph))+'</span>';
+  if(PENDING[p.id]) html += '<span class="frame__status" aria-hidden="true">Uploading</span>';
+  return html;
+}
+
+function media(p,o){
+  o = o||{};
+  const ratio = o.ratio||"portrait";
+  const ph = photoFor(p.id);
+  const ds = {
+    tone:String(o.tone || ((parseInt(p.id.slice(1),10)%4)+1)),
+    caption:o.caption===false ? "" : (o.caption || (p.sku+" / "+(o.view||"01"))),
+    alt:o.alt?"1":"0", eager:o.eager?"1":"0", passive:o.passive?"1":"0", context:o.context||""
+  };
+  const target = isEditing() && !o.passive;
+  const cls = "frame"+RATIO_CLASS[ratio]+(o.compact?" frame--compact":"")+(ph?" has-photo":"")+(PENDING[p.id]?" is-uploading":"");
+  const attrs = ' data-photo-slot="'+p.id+'" data-product-id="'+p.id+'" data-tone="'+ds.tone+'" data-caption="'+esc(ds.caption)+
+    '" data-alt="'+ds.alt+'" data-eager="'+ds.eager+'" data-passive="'+ds.passive+'" data-context="'+esc(ds.context)+'"'+
+    (target ? ' role="button" tabindex="0" data-photo-target aria-label="'+esc(targetLabel(p,!!ph,ds.context))+'"' : "");
+  return '<div class="'+cls+'"'+attrs+'>'+slotInner(p,ds)+'</div>';
+}
+
+/* storefront view: media is a link; editing view: media is the upload button */
+function linked(href,label,inner,cls){
+  return isEditing()
+    ? '<div class="'+cls+'">'+inner+'</div>'
+    : '<a class="'+cls+'" href="'+href+'"'+(label?' aria-label="'+esc(label)+'"':"")+'>'+inner+'</a>';
+}
+
+const FOCAL = [
+  ["0% 0%","Top left"],["50% 0%","Top"],["100% 0%","Top right"],
+  ["0% 50%","Left"],["50% 50%","Centre"],["100% 50%","Right"],
+  ["0% 100%","Bottom left"],["50% 100%","Bottom"],["100% 100%","Bottom right"]
+];
+function photoTools(p,o){
+  o = o||{};
+  const note = o.note||"";
+  const open = '<div data-photo-tools="'+p.id+'" data-note="'+esc(note)+'"';
+  if(!isEditing()) return open+' hidden></div>';
+  const ph = photoFor(p.id);
+  if(!ph){
+    return open+' class="photo-tools photo-tools--empty"><p class="meta">NO PHOTO — '+esc(hintText(false).toUpperCase())+
+      (TOUCH?"":", OR CLICK THE FRAME")+'.</p>'+(note?'<p class="field__hint" style="margin-top:var(--s-2);">'+esc(note)+'</p>':"")+'</div>';
+  }
+  const busy = !!PENDING[p.id];
+  const current = FOCAL.some(f=>f[0]===ph.focalPoint) ? ph.focalPoint : "50% 50%";
+  const crops = [["portrait","3:4",54],["square","1:1",72],["r169","16:9",128],["r45","4:5",58]];
+  return open+' class="photo-tools">'+
+    '<div class="photo-tools__block"><span class="label" id="focal-'+p.id+'">Focal point</span>'+
+      '<div class="focal-grid" role="radiogroup" aria-labelledby="focal-'+p.id+'">'+
+        FOCAL.map(f=>'<button type="button" role="radio" data-focal="'+f[0]+'" data-pid="'+p.id+'" aria-checked="'+(f[0]===current)+
+          '" tabindex="'+(f[0]===current?0:-1)+'" aria-label="'+f[1]+'"'+(busy?" disabled":"")+'></button>').join("")+
+      '</div></div>'+
+    '<div class="photo-tools__block"><span class="label">Crops</span>'+
+      '<div class="crop-row">'+crops.map(c=>'<figure class="crop"><div style="width:'+c[2]+'px;">'+
+        media(p,{ratio:c[0],passive:true,compact:true,caption:false})+'</div><figcaption class="meta">'+c[1]+'</figcaption></figure>').join("")+'</div>'+
+      '<p class="field__hint">One focal point drives every crop of this photo.</p></div>'+
+    '<div class="photo-tools__actions">'+
+      '<span class="meta">'+ph.width+' × '+ph.height+' · JPEG'+(PHOTO_MODE==="local"?" · NOT SAVED":"")+'</span>'+
+      '<button class="btn btn--quiet" type="button" data-photo-replace="'+p.id+'"'+(busy?" disabled":"")+'>Replace</button>'+
+      '<button class="btn btn--quiet" type="button" data-photo-remove="'+p.id+'"'+(busy?" disabled":"")+'>Remove</button>'+
+      (note?'<p class="field__hint" style="flex-basis:100%;">'+esc(note)+'</p>':"")+
+    '</div></div>';
+}
+
+function refreshPhoto(pid){
+  const p = byId(pid);
+  if(!p) return;
+  const ph = photoFor(pid);
+  $$('[data-photo-slot="'+pid+'"]').forEach(el=>{
+    el.innerHTML = slotInner(p,el.dataset);
+    el.classList.toggle("has-photo",!!ph);
+    el.classList.toggle("is-uploading",!!PENDING[pid]);
+    if(el.hasAttribute("data-photo-target")) el.setAttribute("aria-label",targetLabel(p,!!ph,el.dataset.context));
+  });
+  $$('[data-photo-tools="'+pid+'"]').forEach(el=>{ el.outerHTML = photoTools(p,{note:el.dataset.note}); });
+  $$('.hero__stage[data-product-id="'+pid+'"]').forEach(el=>el.classList.toggle("has-photo",!!ph));
+}
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+const $ = (s,root)=> (root||document).querySelector(s);
+const $$ = (s,root)=> Array.from((root||document).querySelectorAll(s));
+const esc = s => String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const baht = n => "฿"+n.toLocaleString("en-US");
+const byId = id => PRODUCTS.find(p=>p.id===id);
+const bySlug = s => PRODUCTS.find(p=>p.slug===s);
+const catLabel = id => (CATEGORIES.find(c=>c.id===id)||{label:id}).label;
+const STOCK = {"in-stock":{label:"In stock",cls:""},"low-stock":{label:"Low stock",cls:"stock--low"},"out-of-stock":{label:"Out of stock",cls:"stock--out"}};
+
+/* ============================================================
+   CART STATE
+   ============================================================ */
+let cart = [];
+try{ cart = JSON.parse(localStorage.getItem("unixa.cart")||"[]"); }catch(e){ cart = []; }
+function saveCart(){ try{ localStorage.setItem("unixa.cart",JSON.stringify(cart)); }catch(e){} }
+function cartCount(){ return cart.reduce((n,l)=>n+l.qty,0); }
+function cartSubtotal(){ return cart.reduce((n,l)=>{const p=byId(l.id); return n+(p?p.price*l.qty:0);},0); }
+function addToCart(id,color,size,qty){
+  const key = id+"|"+color+"|"+size;
+  const line = cart.find(l=>l.key===key);
+  if(line) line.qty += (qty||1); else cart.push({key,id,color,size,qty:qty||1});
+  saveCart(); syncCart();
+}
+function setQty(key,qty){
+  const line = cart.find(l=>l.key===key);
+  if(!line) return;
+  line.qty = qty;
+  if(line.qty<1) cart = cart.filter(l=>l.key!==key);
+  saveCart(); syncCart();
+  if(location.hash.indexOf("#/cart")===0 || location.hash.indexOf("#/checkout")===0) render();
+}
+function syncCart(){
+  const n = cartCount();
+  const el = $("#cartCount");
+  el.textContent = n;
+  el.classList.toggle("is-filled",n>0);
+  $("#cartCountSr").textContent = n+(n===1?" item":" items")+" in bag";
+  $("#drawerCount").textContent = n?"("+n+")":"";
+  renderCartDrawer();
+}
+
+/* ============================================================
+   COMPONENTS
+   ============================================================ */
+function productCard(p,opts){
+  opts = opts||{};
+  const status = p.newArrival ? '<span class="card__status">New</span>'
+    : p.availability==="low-stock" ? '<span class="card__status card__status--signal">Low stock</span>'
+    : p.availability==="out-of-stock" ? '<span class="card__status">Sold out</span>' : "";
+  const swatches = p.colors.map(c=>'<span class="swatch-dot" style="background:'+COLORWAYS[c].hex+'" title="'+esc(COLORWAYS[c].label)+'"></span>').join("");
+  return '<article class="card" data-product-id="'+p.id+'">'+
+    linked("#/product/"+p.slug, localName(p)+", "+baht(p.price), media(p,{alt:true,view:"01",context:"product card"})+status, "card__media")+
+    '<div class="card__body">'+
+      '<div class="card__row"><h3 class="card__name"><a href="#/product/'+p.slug+'">'+esc(localName(p))+'</a></h3>'+
+      '<span class="card__price">'+baht(p.price)+'</span></div>'+
+      '<span class="card__sub">'+esc(catLabel(p.category))+' / '+esc(p.collection)+'</span>'+
+      (opts.detail?'<span class="card__sub" style="text-transform:none;">'+esc(p.material)+'</span>':"")+
+      '<div class="card__colors">'+swatches+'</div>'+
+      '<span class="card__view">View piece</span>'+
+    '</div></article>';
+}
+function productGrid(list,opts){
+  opts = opts||{};
+  if(!list.length) return emptyState("No pieces match these filters.","Reset the filters or browse the full catalogue.",'<a class="link" href="#/shop">Clear filters <span class="link__arrow">→</span></a>');
+  return '<div class="product-grid'+(opts.three?" product-grid--three":"")+'">'+list.map(p=>productCard(p,opts)).join("")+'</div>';
+}
+function emptyState(title,body,action){
+  return '<div class="empty-state"><h3 class="h2">'+esc(title)+'</h3><p class="body caption">'+esc(body)+'</p>'+(action||"")+'</div>';
+}
+function sectionHead(index,title,sub,aside){
+  return '<div class="section-head">'+
+    '<span class="label section-head__index">'+index+'</span>'+
+    '<div class="section-head__title"><h2 class="h1">'+title+'</h2>'+(sub?'<p class="caption">'+esc(sub)+'</p>':"")+'</div>'+
+    (aside?'<div class="section-head__aside">'+aside+'</div>':"")+
+  '</div>';
+}
+function breadcrumbs(trail){
+  return '<nav class="breadcrumbs meta" aria-label="Breadcrumb">'+
+    trail.map((t,i)=> (t.href?'<a href="'+t.href+'">'+esc(t.label)+'</a>':'<span>'+esc(t.label)+'</span>')+(i<trail.length-1?'<span aria-hidden="true">/</span>':"")).join("")+
+  '</nav>';
+}
+
+/* ============================================================
+   VIEW: HOME
+   ============================================================ */
+function viewHome(){
+  const featured = PRODUCTS.filter(p=>p.featured).slice(0,4);
+  const selected = PRODUCTS.filter(p=>p.collection==="Essential" || p.newArrival).slice(0,3);
+  const hero = PRODUCTS[1];
+  const ssCount = PRODUCTS.filter(p=>p.collection==="SS26").length;
+  return ''+
+  '<section class="hero"><div class="container">'+
+    '<div class="hero__stage'+(photoFor(hero.id)?" has-photo":"")+'" data-product-id="'+hero.id+'">'+
+      media(hero,{ratio:"campaign",tone:2,caption:"PLATE 01 / SS26 CAMPAIGN",eager:true,context:"campaign banner"})+
+      '<div class="hero__type">'+
+        '<p class="eyebrow">Spring / Summer 26</p>'+
+        '<h1 class="display">FORM<br>FUNCTION</h1>'+
+        '<div class="hero__support">'+
+          '<p class="body-lg">'+ssCount+' pieces built on one pattern block. Wool, cotton canvas and leather, cut for repetition rather than occasion.</p>'+
+          '<a class="link" href="#/shop?collection=SS26">Shop collection <span class="link__arrow">→</span></a>'+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+    photoTools(hero,{note:"Desktop sets the type inside the 16:9 frame (columns 2–6) in dark ink — use a photo with light negative space on the left and move the focal point right. Mobile crops to 4:5 and moves the type below the frame."})+
+    '<div class="hero__foot">'+
+      '<div class="hero__spec">'+
+        '<span class="meta">'+PRODUCTS.length+' PIECES</span>'+
+        '<span class="meta">2 COLLECTIONS</span>'+
+        '<span class="meta">BANGKOK</span>'+
+      '</div>'+
+      '<p class="th">คอลเลกชันใหม่ ฤดูกาล 2569 — ตัดเย็บในประเทศไทย</p>'+
+    '</div>'+
+  '</div></section>'+
+
+  '<section class="section container">'+
+    sectionHead("01","New Collection","Spring Summer 26 — cut, form and material.",
+      '<p class="caption">The season works through a single silhouette family: structured shoulder, straight body, uncuffed leg.</p><a class="link" href="#/shop?collection=SS26">All SS26 <span class="link__arrow">→</span></a>')+
+    productGrid(featured)+
+  '</section>'+
+
+  '<section class="statement"><div class="container grid">'+
+    '<p class="statement__text">Design is not decoration applied afterwards. It is the order that was there from the first cut.</p>'+
+    '<p class="statement__note meta">UNIXA<br>MANIFESTO / 02</p>'+
+  '</div></section>'+
+
+  '<section class="section container">'+
+    sectionHead("02","The Everyday Object","Two views from the SS26 lookbook.","")+
+    '<div class="grid composition">'+
+      '<figure class="composition__major" data-product-id="'+PRODUCTS[0].id+'">'+media(PRODUCTS[0],{ratio:"square",tone:1,caption:"PLATE 02 / STUDIO",context:"editorial plate"})+
+        '<figcaption class="composition__caption"><span class="label">Plate 02</span><p class="caption">Structured Wool Blazer. Photographed in daylight, no retouching.</p></figcaption></figure>'+
+      '<figure class="composition__minor" data-product-id="'+PRODUCTS[13].id+'">'+media(PRODUCTS[13],{ratio:"square",tone:4,caption:"PLATE 03 / DETAIL",context:"editorial plate"})+
+        '<figcaption class="composition__caption"><span class="label">Plate 03</span><p class="caption">Leather Chelsea Boot, vegetable-tanned.</p></figcaption></figure>'+
+    '</div>'+
+  '</section>'+
+
+  '<section class="section container">'+
+    sectionHead("03","By Category","Four departments, one catalogue.",
+      '<a class="link" href="#/shop">All pieces <span class="link__arrow">→</span></a>')+
+    '<div class="tiles">'+["outerwear","tops","bottoms","accessories"].map(categoryTile).join("")+'</div>'+
+  '</section>'+
+
+  '<section class="section container"><div class="grid brand-statement">'+
+    '<div class="brand-statement__text">'+
+      '<p class="eyebrow">The Label</p>'+
+      '<h2 class="h1">Objects for daily use, made to a fixed standard.</h2>'+
+      '<p class="body-lg">UNIXA works from a small permanent catalogue. Pieces are added when they answer a need the line does not already cover, and removed when they no longer do.</p>'+
+      '<a class="link" href="#/about">About UNIXA <span class="link__arrow">→</span></a>'+
+    '</div>'+
+    '<dl class="brand-statement__spec spec-list">'+
+      '<div class="spec-list__row"><dt>Established</dt><dd>2026</dd></div>'+
+      '<div class="spec-list__row"><dt>Based</dt><dd>Bangkok</dd></div>'+
+      '<div class="spec-list__row"><dt>Production</dt><dd>Thailand</dd></div>'+
+      '<div class="spec-list__row"><dt>Catalogue</dt><dd>'+PRODUCTS.length+' pieces</dd></div>'+
+      '<div class="spec-list__row"><dt>Restock</dt><dd>Quarterly</dd></div>'+
+    '</dl>'+
+  '</div></section>'+
+
+  '<section class="section container">'+
+    sectionHead("04","Selected Pieces","Essential series and new arrivals.",
+      '<a class="link" href="#/shop?collection=Essential">Essential series <span class="link__arrow">→</span></a>')+
+    productGrid(selected,{three:true,detail:true})+
+  '</section>'+
+
+  '<section class="section--tight container"><div class="grid" style="border-top:var(--border);padding-top:var(--s-7);">'+
+    '<div class="newsletter__head"><h2 class="h2">Stay informed</h2><p class="caption">Collection releases and restocks. Roughly six emails a year.</p></div>'+
+    '<form class="newsletter__form inline-form" id="newsletterForm" novalidate>'+
+      '<div class="field"><label class="field__label" for="newsletterEmail">Email address</label>'+
+      '<input class="input" id="newsletterEmail" name="email" type="email" placeholder="name@email.com" autocomplete="email">'+
+      '<span class="field__error" id="newsletterError"></span></div>'+
+      '<button class="btn" type="submit">Subscribe</button>'+
+    '</form>'+
+  '</div></section>';
+}
+
+function categoryTile(catId){
+  const list = PRODUCTS.filter(p=>p.category===catId);
+  const rep = list.find(p=>!p.featured) || list[0];
+  const href = "#/shop?category="+catId;
+  const label = catLabel(catId);
+  return '<article class="tile" data-product-id="'+rep.id+'">'+
+    linked(href, label, media(rep,{caption:label.toUpperCase()+" / "+rep.sku,context:label+" category tile"}), "tile__media")+
+    '<div class="tile__row"><a class="tile__name" href="'+href+'">'+esc(label)+'</a><span class="meta">'+list.length+' PIECES</span></div>'+
+  '</article>';
+}
+
+/* ============================================================
+   VIEW: SHOP
+   ============================================================ */
+function parseQuery(){
+  const raw = location.hash.split("?")[1]||"";
+  const q = new URLSearchParams(raw);
+  return {
+    category:q.getAll("category"),
+    size:q.getAll("size"),
+    color:q.getAll("color"),
+    material:q.getAll("material"),
+    price:q.getAll("price"),
+    collection:q.getAll("collection"),
+    sort:q.get("sort")||"featured"
+  };
+}
+function buildHash(state){
+  const q = new URLSearchParams();
+  ["category","size","color","material","price","collection"].forEach(k=>state[k].forEach(v=>q.append(k,v)));
+  if(state.sort && state.sort!=="featured") q.set("sort",state.sort);
+  const s = q.toString();
+  return "#/shop"+(s?"?"+s:"");
+}
+function applyFilters(state){
+  let list = PRODUCTS.filter(p=>{
+    if(state.category.length && !state.category.includes(p.category)) return false;
+    if(state.collection.length && !state.collection.includes(p.collection)) return false;
+    if(state.material.length && !state.material.includes(p.materialFamily)) return false;
+    if(state.size.length && !state.size.some(s=>p.sizes.includes(s))) return false;
+    if(state.color.length && !state.color.some(c=>p.colors.includes(c))) return false;
+    if(state.price.length){
+      const bands = PRICE_BANDS.filter(b=>state.price.includes(b.id));
+      if(!bands.some(b=>b.test(p))) return false;
+    }
+    return true;
+  });
+  if(state.sort==="price-asc") list.sort((a,b)=>a.price-b.price);
+  else if(state.sort==="price-desc") list.sort((a,b)=>b.price-a.price);
+  else if(state.sort==="newest") list.sort((a,b)=>(b.newArrival?1:0)-(a.newArrival?1:0));
+  else list.sort((a,b)=>(b.featured?1:0)-(a.featured?1:0));
+  return list;
+}
+function filterGroup(label,key,options,state){
+  return '<div class="filter-group"><h3 class="filter-group__label">'+esc(label)+'</h3><div class="filter-options">'+
+    options.map(o=>{
+      const on = state[key].includes(o.id);
+      const dot = key==="color" ? '<span class="chip__dot" style="background:'+COLORWAYS[o.id].hex+'"></span>' : "";
+      return '<button class="chip" type="button" data-filter="'+key+'" data-value="'+esc(o.id)+'" aria-pressed="'+on+'">'+dot+esc(o.label)+'</button>';
+    }).join("")+'</div></div>';
+}
+function activeChips(state){
+  const items = [];
+  const push=(k,v,label)=>items.push('<button class="chip chip--removable" type="button" data-filter="'+k+'" data-value="'+esc(v)+'" aria-pressed="true">'+esc(label)+' <span class="chip__x" aria-hidden="true">×</span><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">Remove filter</span></button>');
+  state.category.forEach(v=>push("category",v,catLabel(v)));
+  state.collection.forEach(v=>push("collection",v,v));
+  state.material.forEach(v=>push("material",v,(MATERIALS.find(m=>m.id===v)||{label:v}).label));
+  state.size.forEach(v=>push("size",v,"Size "+v));
+  state.color.forEach(v=>push("color",v,COLORWAYS[v].label));
+  state.price.forEach(v=>push("price",v,(PRICE_BANDS.find(b=>b.id===v)||{label:v}).label));
+  if(!items.length) return "";
+  return '<div class="active-filters"><span class="label">Active</span>'+items.join("")+
+    '<button class="toolbar__btn" type="button" id="clearFilters" style="margin-left:var(--s-3);">Clear all</button></div>';
+}
+function viewShop(){
+  const state = parseQuery();
+  const list = applyFilters(state);
+  const count = ["category","size","color","material","price","collection"].reduce((n,k)=>n+state[k].length,0);
+  const sizeOptions = [...new Set(PRODUCTS.flatMap(p=>p.sizes))].map(s=>({id:s,label:s}));
+  const colorOptions = Object.keys(COLORWAYS).map(c=>({id:c,label:COLORWAYS[c].label}));
+  const title = state.category.length===1 ? catLabel(state.category[0])
+    : state.collection.length===1 ? (COLLECTIONS.find(c=>c.id===state.collection[0])||{label:state.collection[0]}).label
+    : "Shop";
+
+  return ''+
+  '<section class="page-head container">'+
+    breadcrumbs([{label:"Home",href:"#/"},{label:title}])+
+    '<div class="page-head__row">'+
+      '<h1 class="h1">'+esc(title)+'</h1>'+
+      '<p class="meta">'+list.length+' / '+PRODUCTS.length+' PIECES</p>'+
+    '</div>'+
+  '</section>'+
+
+  '<div class="toolbar"><div class="container toolbar__inner">'+
+    '<div class="toolbar__group">'+
+      '<button class="toolbar__btn" id="filterToggle" aria-expanded="false" aria-controls="filterPanel">Filter'+(count?' <span class="count is-filled">'+count+'</span>':"")+'</button>'+
+    '</div>'+
+    '<div class="toolbar__group">'+
+      '<label class="label" for="sortSelect">Sort</label>'+
+      '<select class="select" id="sortSelect">'+SORTS.map(s=>'<option value="'+s.id+'"'+(state.sort===s.id?" selected":"")+'>'+esc(s.label)+'</option>').join("")+'</select>'+
+    '</div>'+
+  '</div></div>'+
+
+  '<div class="filter-panel" id="filterPanel">'+
+    '<div class="container">'+
+      '<div class="filter-panel__inner">'+
+        filterGroup("Category","category",CATEGORIES,state)+
+        filterGroup("Collection","collection",COLLECTIONS,state)+
+        filterGroup("Size","size",sizeOptions,state)+
+        filterGroup("Colour","color",colorOptions,state)+
+        filterGroup("Material","material",MATERIALS,state)+
+        filterGroup("Price","price",PRICE_BANDS.map(b=>({id:b.id,label:b.label})),state)+
+      '</div>'+
+      '<div class="filter-panel__foot">'+
+        '<span class="meta">'+list.length+' RESULTS</span>'+
+        '<div style="display:flex;gap:var(--s-4);">'+
+          '<button class="btn--quiet btn" type="button" id="resetFilters">Reset</button>'+
+          '<button class="btn" type="button" id="applyFilters">Done</button>'+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+  '</div>'+
+
+  '<section class="container">'+
+    (activeChips(state)||'<div class="results-note"></div>')+
+    productGrid(list)+
+  '</section>';
+}
+
+/* ============================================================
+   VIEW: PRODUCT
+   ============================================================ */
+function viewProduct(slug){
+  const p = bySlug(slug);
+  if(!p) return '<section class="container section">'+emptyState("Piece not found","This piece is not in the current catalogue.",'<a class="link" href="#/shop">Back to shop <span class="link__arrow">→</span></a>')+'</section>';
+  const stock = STOCK[p.availability];
+  const out = p.availability==="out-of-stock";
+  const related = PRODUCTS.filter(r=>r.category===p.category&&r.id!==p.id).slice(0,4);
+  return ''+
+  '<section class="pdp container">'+
+    breadcrumbs([{label:"Home",href:"#/"},{label:"Shop",href:"#/shop"},{label:catLabel(p.category),href:"#/shop?category="+p.category},{label:p.name}])+
+    '<div class="grid">'+
+      '<div class="pdp__gallery">'+
+        '<div class="pdp__gallery-main" data-product-id="'+p.id+'">'+media(p,{tone:1,view:"01",eager:true,context:"product page"})+'</div>'+
+        photoTools(p)+
+      '</div>'+
+      '<div class="pdp__info">'+
+        '<div class="pdp__head">'+
+          '<span class="label">'+esc(catLabel(p.category))+' / '+esc(p.collection)+'</span>'+
+          '<h1 class="h1" style="font-size:clamp(1.5rem,2.4vw,2rem);">'+esc(localName(p))+'</h1>'+
+          '<p class="th">'+esc(p.nameTh)+'</p>'+
+          '<p class="pdp__price">'+baht(p.price)+' <span class="meta">THB</span></p>'+
+        '</div>'+
+        '<p class="small">'+esc(p.description)+'</p>'+
+        '<div class="option-group">'+
+          '<div class="option-group__head"><span class="label">Colour</span><span class="meta" id="colorLabel">'+esc(COLORWAYS[p.colors[0]].label)+'</span></div>'+
+          '<div style="display:flex;gap:var(--s-2);" role="group" aria-label="Colour">'+
+            p.colors.map((c,i)=>'<button class="swatch" type="button" data-color="'+c+'" aria-pressed="'+(i===0)+'" aria-label="'+esc(COLORWAYS[c].label)+'"><span style="background:'+COLORWAYS[c].hex+'"></span></button>').join("")+
+          '</div>'+
+        '</div>'+
+        '<div class="option-group">'+
+          '<div class="option-group__head"><span class="label">Size</span><button class="link" type="button" id="sizeGuide" style="font-size:var(--fs-label);">Size guide</button></div>'+
+          '<div class="size-grid" role="group" aria-label="Size">'+
+            p.sizes.map((s,i)=>'<button class="chip size-chip" type="button" data-size="'+esc(s)+'" aria-pressed="false"'+(out||(s==="XS"&&p.availability==="low-stock")?" disabled":"")+'>'+esc(s)+'</button>').join("")+
+          '</div>'+
+          '<p class="field__error" id="sizeError"></p>'+
+        '</div>'+
+        '<button class="btn btn--block" type="button" id="addToCart" data-id="'+p.id+'"'+(out?" disabled":"")+'>'+(out?"Sold out":"Add to bag")+'</button>'+
+        '<p class="stock meta '+stock.cls+'"><span class="stock__dot"></span>'+esc(stock.label)+' &middot; Ships in 2–4 days</p>'+
+        '<div class="accordion">'+
+          accordionItem("Material",esc(p.material),true)+
+          accordionItem("Care",esc(p.care))+
+          accordionItem("Fit",esc(p.fit))+
+          accordionItem("Shipping &amp; returns","Free shipping over ฿2,500. Returns accepted within 14 days, unworn with tags attached.")+
+        '</div>'+
+        '<dl class="spec-list">'+
+          '<div class="spec-list__row"><dt>Style</dt><dd>'+esc(p.sku)+'</dd></div>'+
+          '<div class="spec-list__row"><dt>Collection</dt><dd>'+esc(p.collection)+'</dd></div>'+
+          '<div class="spec-list__row"><dt>Made in</dt><dd>Thailand</dd></div>'+
+        '</dl>'+
+      '</div>'+
+    '</div>'+
+  '</section>'+
+  (related.length?'<section class="section container"><div class="section-head"><span class="label section-head__index">—</span><div class="section-head__title"><h2 class="h2">Also in '+esc(catLabel(p.category))+'</h2></div></div>'+productGrid(related)+'</section>':"");
+}
+function accordionItem(title,body,open){
+  return '<div class="accordion__item'+(open?" is-open":"")+'">'+
+    '<button class="accordion__trigger" type="button" aria-expanded="'+(open?"true":"false")+'">'+title+'<span class="accordion__sign" aria-hidden="true">'+(open?"−":"+")+'</span></button>'+
+    '<div class="accordion__panel"><p class="small">'+body+'</p></div>'+
+  '</div>';
+}
+
+/* ============================================================
+   VIEW: CART / CHECKOUT
+   ============================================================ */
+function cartLine(l,compact){
+  const p = byId(l.id);
+  if(!p) return "";
+  return '<div class="cart-line" data-product-id="'+p.id+'"'+(compact?' style="grid-template-columns:72px 1fr auto;"':"")+'>'+
+    linked("#/product/"+p.slug, localName(p), media(p,{tone:2,caption:false,compact:true,context:"bag"}), "cart-line__media")+
+    '<div class="cart-line__info">'+
+      '<a class="h3" href="#/product/'+p.slug+'">'+esc(localName(p))+'</a>'+
+      '<span class="meta">'+esc(COLORWAYS[l.color].label)+' / '+esc(l.size)+'</span>'+
+      '<div class="qty" role="group" aria-label="Quantity for '+esc(p.name)+'">'+
+        '<button type="button" data-qty="dec" data-key="'+esc(l.key)+'" aria-label="Decrease quantity">−</button>'+
+        '<span class="qty__value">'+l.qty+'</span>'+
+        '<button type="button" data-qty="inc" data-key="'+esc(l.key)+'" aria-label="Increase quantity">+</button>'+
+      '</div>'+
+    '</div>'+
+    '<div class="cart-line__end">'+
+      '<span class="card__price">'+baht(p.price*l.qty)+'</span>'+
+      '<button class="remove" type="button" data-remove="'+esc(l.key)+'">Remove</button>'+
+    '</div>'+
+  '</div>';
+}
+function shippingCost(){ const s = cartSubtotal(); return (s===0||s>=2500)?0:150; }
+function viewCart(){
+  if(!cart.length){
+    return '<section class="page-head container">'+breadcrumbs([{label:"Home",href:"#/"},{label:"Bag"}])+'<h1 class="h1">Bag</h1></section>'+
+      '<section class="container">'+emptyState("Your bag is empty","Pieces you add will be held here for this browser.",'<a class="link" href="#/shop">Browse the catalogue <span class="link__arrow">→</span></a>')+'</section>';
+  }
+  const ship = shippingCost();
+  return '<section class="page-head container">'+breadcrumbs([{label:"Home",href:"#/"},{label:"Bag"}])+
+    '<div class="page-head__row"><h1 class="h1">Bag</h1><p class="meta">'+cartCount()+' ITEMS</p></div></section>'+
+  '<section class="container"><div class="grid">'+
+    '<div class="cart-page__lines">'+cart.map(l=>cartLine(l)).join("")+'</div>'+
+    '<aside class="cart-page__summary"><div class="summary">'+
+      '<h2 class="label label--ink">Summary</h2>'+
+      '<div class="summary__row"><span>Subtotal</span><span>'+baht(cartSubtotal())+'</span></div>'+
+      '<div class="summary__row"><span>Shipping</span><span>'+(ship?baht(ship):"Free")+'</span></div>'+
+      '<div class="summary__row summary__row--total"><span>Total</span><span>'+baht(cartSubtotal()+ship)+'</span></div>'+
+      '<a class="btn btn--block" href="#/checkout">Proceed to checkout</a>'+
+      '<p class="field__hint">Ships from Bangkok in 2–4 working days. Free over ฿2,500.</p>'+
+    '</div></aside>'+
+  '</div></section>';
+}
+function viewCheckout(){
+  if(!cart.length){
+    return '<section class="page-head container"><h1 class="h1">Checkout</h1></section><section class="container">'+
+      emptyState("Nothing to check out","Your bag is empty.",'<a class="link" href="#/shop">Browse the catalogue <span class="link__arrow">→</span></a>')+'</section>';
+  }
+  const ship = shippingCost();
+  return '<section class="page-head container">'+breadcrumbs([{label:"Home",href:"#/"},{label:"Bag",href:"#/cart"},{label:"Checkout"}])+
+    '<h1 class="h1">Checkout</h1></section>'+
+  '<section class="container"><div class="grid">'+
+    '<form class="checkout__form" id="checkoutForm" novalidate>'+
+      '<fieldset class="fieldset"><legend class="fieldset__legend">Contact</legend>'+
+        '<div class="field"><label class="field__label" for="coEmail">Email</label>'+
+        '<input class="input" id="coEmail" name="email" type="email" autocomplete="email" placeholder="name@email.com">'+
+        '<span class="field__error" data-error-for="coEmail"></span></div>'+
+      '</fieldset>'+
+      '<fieldset class="fieldset"><legend class="fieldset__legend">Shipping address</legend>'+
+        '<div class="field-row">'+
+          '<div class="field"><label class="field__label" for="coFirst">First name</label><input class="input" id="coFirst" name="first" autocomplete="given-name"><span class="field__error" data-error-for="coFirst"></span></div>'+
+          '<div class="field"><label class="field__label" for="coLast">Last name</label><input class="input" id="coLast" name="last" autocomplete="family-name"><span class="field__error" data-error-for="coLast"></span></div>'+
+        '</div>'+
+        '<div class="field"><label class="field__label" for="coAddress">Address</label><input class="input" id="coAddress" name="address" autocomplete="street-address"><span class="field__error" data-error-for="coAddress"></span></div>'+
+        '<div class="field-row">'+
+          '<div class="field"><label class="field__label" for="coCity">City</label><input class="input" id="coCity" name="city" autocomplete="address-level2"><span class="field__error" data-error-for="coCity"></span></div>'+
+          '<div class="field"><label class="field__label" for="coPost">Postal code</label><input class="input" id="coPost" name="post" inputmode="numeric" autocomplete="postal-code"><span class="field__error" data-error-for="coPost"></span></div>'+
+        '</div>'+
+      '</fieldset>'+
+      '<fieldset class="fieldset"><legend class="fieldset__legend">Payment</legend>'+
+        '<p class="field__hint">Prototype — no payment is processed and no card details are collected.</p>'+
+        '<div class="field"><label class="field__label" for="coMethod">Method</label>'+
+        '<select class="input" id="coMethod" name="method"><option>Credit card</option><option>PromptPay</option><option>Bank transfer</option></select></div>'+
+      '</fieldset>'+
+      '<button class="btn" type="submit" id="placeOrder">Place order</button>'+
+      '<p id="checkoutStatus" class="meta" aria-live="polite"></p>'+
+    '</form>'+
+    '<aside class="checkout__summary"><div class="summary">'+
+      '<h2 class="label label--ink">Order</h2>'+
+      cart.map(l=>{const p=byId(l.id);return '<div class="summary__item" data-product-id="'+p.id+'">'+
+        media(p,{tone:2,caption:false,compact:true,context:"order summary"})+
+        '<span>'+esc(localName(p))+' <span class="meta">×'+l.qty+'</span></span><span>'+baht(p.price*l.qty)+'</span></div>';}).join("")+
+      '<div class="summary__row"><span>Shipping</span><span>'+(ship?baht(ship):"Free")+'</span></div>'+
+      '<div class="summary__row summary__row--total"><span>Total</span><span>'+baht(cartSubtotal()+ship)+'</span></div>'+
+    '</div></aside>'+
+  '</div></section>';
+}
+
+/* ============================================================
+   VIEW: EDITORIAL / ABOUT / ACCOUNT
+   ============================================================ */
+function viewEditorial(){
+  return '<section class="page-head container">'+breadcrumbs([{label:"Home",href:"#/"},{label:"Editorial"}])+
+    '<div class="page-head__row"><h1 class="h1">Editorial</h1><p class="meta">'+EDITORIALS.length+' ENTRIES</p></div></section>'+
+    '<section class="container section--tight"><div class="product-grid product-grid--three">'+
+      EDITORIALS.map((e,i)=>{const p=byId(e.pid);return '<article class="card" data-product-id="'+p.id+'">'+
+        linked("#/editorial/"+e.slug, e.title, media(p,{ratio:"square",tone:i+1,caption:"PLATE 0"+(i+1)+" / "+p.sku,context:"editorial entry"}), "card__media")+
+        '<div class="card__body"><span class="card__sub">'+esc(e.date)+'</span><h2 class="h3"><a href="#/editorial/'+e.slug+'">'+esc(e.title)+'</a></h2>'+
+        '<p class="caption">'+esc(e.standfirst)+'</p></div></article>';}).join("")+
+    '</div></section>';
+}
+function viewEditorialEntry(slug){
+  const e = EDITORIALS.find(x=>x.slug===slug);
+  if(!e) return '<section class="container section">'+emptyState("Entry not found","",'<a class="link" href="#/editorial">All entries <span class="link__arrow">→</span></a>')+'</section>';
+  return '<section class="page-head container">'+breadcrumbs([{label:"Home",href:"#/"},{label:"Editorial",href:"#/editorial"},{label:e.title}])+
+    '<h1 class="h1" style="max-width:18ch;">'+esc(e.title)+'</h1><p class="meta" style="margin-top:var(--s-4);">'+esc(e.date)+'</p></section>'+
+    '<section class="container">'+emptyState("Article not published","Full editorial text is not part of this design prototype. The index, typography and layout system above are.",'<a class="link" href="#/editorial">Back to index <span class="link__arrow">→</span></a>')+'</section>';
+}
+function viewAbout(){
+  return '<section class="page-head container">'+breadcrumbs([{label:"Home",href:"#/"},{label:"About"}])+'<h1 class="h1" style="max-width:16ch;">A small permanent catalogue</h1></section>'+
+  '<section class="container section--tight"><div class="grid">'+
+    '<div class="brand-statement__text">'+
+      '<p class="body-lg">UNIXA designs clothing for repetition. Each piece is developed from a shared pattern block, produced in Thailand in limited runs, and kept in the catalogue until it is replaced by something that does the job better.</p>'+
+      '<p class="body">We do not run seasonal sales. Prices reflect material and production cost, and stay fixed for the life of the piece.</p>'+
+      '<p class="th">เสื้อผ้าสำหรับใช้งานจริงทุกวัน ผลิตในประเทศไทย จำนวนจำกัดต่อรุ่น</p>'+
+    '</div>'+
+    '<dl class="brand-statement__spec spec-list">'+
+      '<div class="spec-list__row"><dt>Studio</dt><dd>Bangkok</dd></div>'+
+      '<div class="spec-list__row"><dt>Production</dt><dd>Thailand</dd></div>'+
+      '<div class="spec-list__row"><dt>Shipping</dt><dd>2–4 days</dd></div>'+
+      '<div class="spec-list__row"><dt>Returns</dt><dd>14 days</dd></div>'+
+      '<div class="spec-list__row"><dt>Contact</dt><dd>studio@unixa.co</dd></div>'+
+    '</dl>'+
+  '</div></section>';
+}
+function viewAccount(){
+  return '<section class="page-head container">'+breadcrumbs([{label:"Home",href:"#/"},{label:"Account"}])+'<h1 class="h1">Account</h1></section>'+
+  '<section class="container section--tight"><div class="grid">'+
+    '<form class="checkout__form" id="signinForm" novalidate style="grid-column:1/span 4;">'+
+      '<fieldset class="fieldset"><legend class="fieldset__legend">Sign in</legend>'+
+        '<div class="field"><label class="field__label" for="acEmail">Email</label><input class="input" id="acEmail" type="email" autocomplete="email" placeholder="name@email.com"><span class="field__error" data-error-for="acEmail"></span></div>'+
+        '<div class="field"><label class="field__label" for="acPass">Password</label><input class="input" id="acPass" type="password" autocomplete="current-password"><span class="field__error" data-error-for="acPass"></span></div>'+
+        '<button class="btn" type="submit">Sign in</button>'+
+        '<p class="field__hint">Prototype — authentication is not wired to a backend.</p>'+
+      '</fieldset>'+
+    '</form>'+
+  '</div></section>';
+}
+
+/* ============================================================
+   ROUTER
+   ============================================================ */
+const NAV = [
+  {label:"Shop",href:"#/shop"},
+  {label:"Collections",href:"#/shop?collection=SS26"},
+  {label:"Editorial",href:"#/editorial"},
+  {label:"About",href:"#/about"}
+];
+function renderNav(){
+  const path = location.hash.split("?")[0];
+  $("#navPrimary").innerHTML = NAV.map(n=>'<a href="'+n.href+'"'+(path===n.href.split("?")[0]?' class="is-current" aria-current="page"':"")+'>'+n.label+'</a>').join("");
+  $("#menuList").innerHTML = NAV.map(n=>'<a href="'+n.href+'">'+n.label+'<span class="meta">→</span></a>').join("");
+  $("#menuSub").innerHTML = '<span class="label" style="width:100%;">Categories</span>'+
+    CATEGORIES.map(c=>'<a class="chip" href="#/shop?category='+c.id+'">'+c.label+'</a>').join("");
+}
+function render(){
+  const hash = location.hash || "#/";
+  const path = hash.split("?")[0];
+  const parts = path.replace(/^#\//,"").split("/").filter(Boolean);
+  let html;
+  if(parts.length===0) html = viewHome();
+  else if(parts[0]==="shop") html = viewShop();
+  else if(parts[0]==="product") html = viewProduct(parts[1]);
+  else if(parts[0]==="cart") html = viewCart();
+  else if(parts[0]==="checkout") html = viewCheckout();
+  else if(parts[0]==="editorial") html = parts[1]?viewEditorialEntry(parts[1]):viewEditorial();
+  else if(parts[0]==="about") html = viewAbout();
+  else if(parts[0]==="account") html = viewAccount();
+  else html = '<section class="container section">'+emptyState("Page not found","That route is not part of this prototype.",'<a class="link" href="#/">Home <span class="link__arrow">→</span></a>')+'</section>';
+  $("#main").innerHTML = html;
+  renderNav();
+}
+
+/* ============================================================
+   LAYERS — focus management
+   ============================================================ */
+let activeLayer=null, lastTrigger=null;
+function openLayer(id,trigger){
+  const el = document.getElementById(id);
+  if(!el) return;
+  lastTrigger = trigger||null;
+  activeLayer = el;
+  el.classList.add("is-open");
+  el.setAttribute("aria-hidden","false");
+  $("#scrim").classList.add("is-open");
+  document.body.classList.add("is-locked");
+  if(trigger) trigger.setAttribute("aria-expanded","true");
+  const focusable = el.querySelector("input,button,a[href]");
+  if(focusable) setTimeout(()=>focusable.focus(),60);
+}
+function closeLayer(el){
+  el = el||activeLayer;
+  if(!el) return;
+  el.classList.remove("is-open");
+  el.setAttribute("aria-hidden","true");
+  $("#scrim").classList.remove("is-open");
+  document.body.classList.remove("is-locked");
+  $$("[aria-controls='"+el.id+"']").forEach(b=>b.setAttribute("aria-expanded","false"));
+  if(lastTrigger) lastTrigger.focus();
+  activeLayer=null; lastTrigger=null;
+}
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"){
+    if(activeLayer) closeLayer();
+    else if($("#filterPanel") && $("#filterPanel").classList.contains("is-open")) toggleFilter(false);
+  }
+  if(e.key==="Tab" && activeLayer){
+    const f = $$('a[href],button:not([disabled]),input,select,textarea',activeLayer).filter(el=>el.offsetParent!==null);
+    if(!f.length) return;
+    const first=f[0], last=f[f.length-1];
+    if(e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
+    else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
+  }
+  if(e.key==="g" && !/input|textarea|select/i.test(document.activeElement.tagName)) toggleGrid();
+});
+$("#scrim").addEventListener("click",()=>{ if(activeLayer) closeLayer(); toggleFilter(false); });
+
+/* cart drawer */
+function renderCartDrawer(){
+  const body = $("#cartDrawerBody"), foot = $("#cartDrawerFoot");
+  if(!cart.length){
+    body.innerHTML = '<div class="empty-state" style="border:0;padding-block:var(--s-7);"><h3 class="h3">Your bag is empty</h3><p class="caption">Pieces you add are held in this browser.</p><a class="link" href="#/shop" data-close-on-nav>Browse catalogue <span class="link__arrow">→</span></a></div>';
+    foot.innerHTML = '';
+    return;
+  }
+  body.innerHTML = cart.map(l=>cartLine(l,true)).join("");
+  const ship = shippingCost();
+  foot.innerHTML = '<div class="summary__row"><span>Subtotal</span><span>'+baht(cartSubtotal())+'</span></div>'+
+    '<div class="summary__row"><span>Shipping</span><span>'+(ship?baht(ship):"Free")+'</span></div>'+
+    '<a class="btn btn--block" href="#/checkout" data-close-on-nav>Checkout · '+baht(cartSubtotal()+ship)+'</a>'+
+    '<a class="link" href="#/cart" data-close-on-nav style="align-self:flex-start;">View full bag <span class="link__arrow">→</span></a>';
+}
+
+/* search */
+let searchTimer=null;
+function runSearch(q){
+  const state = $("#searchState"), results = $("#searchResults"), suggest = $("#searchSuggest");
+  const term = q.trim().toLowerCase();
+  if(!term){
+    state.textContent = "";
+    suggest.innerHTML = '<span class="label">Suggested</span><div class="suggest">'+
+      CATEGORIES.map(c=>'<a class="chip" href="#/shop?category='+c.id+'" data-close-on-nav>'+c.label+'</a>').join("")+
+      '<a class="chip" href="#/shop?sort=newest" data-close-on-nav>New arrivals</a></div>';
+    results.innerHTML = "";
+    return;
+  }
+  state.textContent = "SEARCHING…";
+  suggest.innerHTML = "";
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(()=>{
+    const hits = PRODUCTS.filter(p=>
+      (p.name+" "+p.nameTh+" "+p.category+" "+p.collection+" "+p.material+" "+p.sku).toLowerCase().includes(term));
+    state.textContent = hits.length+" RESULT"+(hits.length===1?"":"S")+" FOR “"+q.trim().toUpperCase()+"”";
+    results.innerHTML = hits.length
+      ? hits.map(p=>productCard(p)).join("")
+      : '<div style="grid-column:1/-1;">'+emptyState("No results","Try another term, or browse by category.",'<a class="link" href="#/shop" data-close-on-nav>All pieces <span class="link__arrow">→</span></a>')+'</div>';
+  },140);
+}
+
+/* filter panel */
+function toggleFilter(force){
+  const panel = $("#filterPanel"), btn = $("#filterToggle");
+  if(!panel) return;
+  const open = force===undefined ? !panel.classList.contains("is-open") : force;
+  panel.classList.toggle("is-open",open);
+  if(btn) btn.setAttribute("aria-expanded",String(open));
+  if(window.innerWidth<=719){
+    $("#scrim").classList.toggle("is-open",open);
+    document.body.classList.toggle("is-locked",open);
+  }
+}
+function updateFilter(key,value){
+  const state = parseQuery();
+  const arr = state[key];
+  const i = arr.indexOf(value);
+  if(i>-1) arr.splice(i,1); else arr.push(value);
+  const wasOpen = $("#filterPanel") && $("#filterPanel").classList.contains("is-open");
+  location.hash = buildHash(state);
+  if(wasOpen) setTimeout(()=>toggleFilter(true),0);
+}
+
+/* toast */
+let toastTimer=null;
+function toast(msg,isError){
+  const t = $("#toast");
+  t.textContent = msg;
+  t.classList.toggle("toast--error",!!isError);
+  t.classList.add("is-open");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove("is-open"),isError?5200:2600);
+}
+
+/* grid overlay */
+function toggleGrid(){
+  const on = document.body.classList.toggle("grid-on");
+  $("#gridToggle").setAttribute("aria-pressed",String(on));
+}
+
+/* ============================================================
+   PHOTO PIPELINE — decode → downscale → flatten → JPEG → store
+   ============================================================ */
+const MAX_EDGE = 1600, JPEG_QUALITY = 0.85, MAX_INPUT_BYTES = 25*1024*1024;
+
+function reasonFor(err){
+  const M = {
+    decode:"this file couldn't be read as an image. Try a JPEG, PNG or WebP.",
+    input_too_large:"the file is larger than 25 MB. Choose a smaller image.",
+    too_large:"the file is over the 20 MB storage limit.",
+    unsupported_type:"storage doesn't accept this file type. Try a JPEG, PNG or WebP.",
+    quota_or_state:"photo storage for this store is full. Remove unused photos and try again.",
+    quota_exceeded:"the product database is full.",
+    rate_limited:"too many uploads at once. Wait a moment and try again.",
+    resource_exhausted:"too many changes at once. Wait a moment and try again.",
+    upstream_auth:"your session has expired. Reload the page and sign in again.",
+    store_unavailable:"storage is temporarily unavailable. Try again shortly.",
+    unavailable:"the product database is temporarily unavailable. Try again shortly.",
+    invalid_argument:"you don't have permission to change product photos.",
+    not_granted:"photo uploads aren't available in this view.",
+    capability_disabled:"photo uploads aren't available in this view.",
+    capability_removed:"photo uploads aren't available in this view.",
+    revoked:"your access to this store changed. Reload the page."
+  };
+  const code = err && err.code;
+  if(M[code]) return M[code];
+  if(navigator.onLine===false) return "you appear to be offline. Check your connection and try again.";
+  return "check your connection and try again.";
+}
+
+function decodeImage(file){
+  const viaElement = ()=>new Promise((resolve,reject)=>{
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = ()=>{ URL.revokeObjectURL(url); resolve(img); };
+    img.onerror = ()=>{ URL.revokeObjectURL(url); reject({code:"decode"}); };
+    img.src = url;
+  });
+  if(typeof createImageBitmap!=="function") return viaElement();
+  return createImageBitmap(file,{imageOrientation:"from-image"}).catch(viaElement);
+}
+
+async function encodePhoto(file){
+  const src = await decodeImage(file);
+  const sw = src.naturalWidth || src.width, sh = src.naturalHeight || src.height;
+  if(!sw || !sh) throw {code:"decode"};
+  const scale = Math.min(1, MAX_EDGE/Math.max(sw,sh));
+  const w = Math.max(1,Math.round(sw*scale)), h = Math.max(1,Math.round(sh*scale));
+  const canvas = document.createElement("canvas");
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = "#FFFFFF";          // flatten alpha onto white
+  ctx.fillRect(0,0,w,h);
+  ctx.imageSmoothingQuality = "high";
+  ctx.drawImage(src,0,0,w,h);
+  if(typeof src.close==="function") src.close();
+  const blob = await new Promise(r=>canvas.toBlob(r,"image/jpeg",JPEG_QUALITY));
+  if(!blob) throw {code:"decode"};
+  return {blob,width:w,height:h};
+}
+
+function retryOnce(fn,code){
+  return fn().catch(err=>{
+    if(err && err.code===code) return new Promise(r=>setTimeout(r,600+Math.random()*400)).then(fn);
+    throw err;
+  });
+}
+const docChains = {};
+function writeDoc(pid,body){
+  const run = ()=>retryOnce(()=>DB.doc("products/"+pid).set(body),"unavailable");
+  const next = (docChains[pid]||Promise.resolve()).catch(()=>{}).then(run);
+  docChains[pid] = next;
+  return next;
+}
+function deleteAsset(url){
+  const m = /^\/_blob\/(.+)$/.exec(url||"");
+  if(m && ASSETS) ASSETS.delete(m[1]).catch(()=>{});
+}
+function preload(url){
+  return new Promise(res=>{
+    const img = new Image();
+    const done = ()=>res();
+    img.onload = done; img.onerror = done;
+    setTimeout(done,5000);
+    img.src = url;
+  });
+}
+
+/* storage adapter: artifact assets + db when available, in-memory preview otherwise */
+const STORE = {
+  async save(pid,enc){
+    const prev = PHOTOS[pid];
+    if(PHOTO_MODE==="local"){
+      if(prev && prev.url.indexOf("blob:")===0) URL.revokeObjectURL(prev.url);
+      PHOTOS[pid] = {url:URL.createObjectURL(enc.blob),width:enc.width,height:enc.height,focalPoint:"50% 50%"};
+      return;
+    }
+    const up = await retryOnce(()=>ASSETS.upload(enc.blob,{type:"image/jpeg"}),"store_unavailable");
+    const photo = {url:"/_blob/"+up.id,width:enc.width,height:enc.height,focalPoint:"50% 50%"};
+    try{ await writeDoc(pid,{photo}); }
+    catch(err){ ASSETS.delete(up.id).catch(()=>{}); throw err; }
+    PHOTOS[pid] = photo; SNAP[pid] = photo;
+    if(prev && prev.url!==photo.url) deleteAsset(prev.url);
+    await preload(photo.url);
+  },
+  async remove(pid){
+    const prev = PHOTOS[pid];
+    if(PHOTO_MODE==="local"){
+      if(prev && prev.url.indexOf("blob:")===0) URL.revokeObjectURL(prev.url);
+      PHOTOS[pid] = null;
+      return;
+    }
+    await writeDoc(pid,{photo:null});
+    PHOTOS[pid] = null; SNAP[pid] = null;
+    if(prev) deleteAsset(prev.url);
+  },
+  async setFocal(pid,photo){
+    if(PHOTO_MODE==="local") return;
+    await writeDoc(pid,{photo});
+    SNAP[pid] = photo;
+  }
+};
+
+function firstImage(files){
+  const list = Array.from(files||[]);
+  return {image:list.find(f=>f.type && f.type.indexOf("image/")===0), count:list.length};
+}
+
+async function handleFiles(pid,files){
+  const p = byId(pid);
+  if(!p || !isEditing()) return;
+  const pick = firstImage(files);
+  if(!pick.image){ if(pick.count) toast("Only image files can be used as product photos.",true); return; }
+  if(PENDING[pid]){ toast("A photo for "+localName(p)+" is still uploading."); return; }
+  if(pick.image.size > MAX_INPUT_BYTES){ toast("Upload failed — "+reasonFor({code:"input_too_large"}),true); return; }
+
+  let enc;
+  try{ enc = await encodePhoto(pick.image); }
+  catch(err){ toast("Upload failed — "+reasonFor({code:"decode"}),true); return; }
+
+  const preview = URL.createObjectURL(enc.blob);
+  PENDING[pid] = {url:preview,width:enc.width,height:enc.height,focalPoint:"50% 50%"};
+  refreshPhoto(pid);
+  toast((PHOTO_MODE==="local"?"Adding photo — ":"Uploading photo — ")+localName(p));
+  try{
+    await STORE.save(pid,enc);
+    toast(PHOTO_MODE==="local" ? "Photo added — preview only, not saved" : "Photo saved — "+localName(p));
+  }catch(err){
+    toast("Upload failed — "+reasonFor(err),true);
+  }finally{
+    delete PENDING[pid];
+    URL.revokeObjectURL(preview);
+    refreshPhoto(pid);
+  }
+}
+
+async function removePhoto(pid){
+  const p = byId(pid);
+  try{
+    await STORE.remove(pid);
+    toast("Photo removed — "+localName(p));
+  }catch(err){
+    toast("Photo not removed — "+reasonFor(err),true);
+  }
+  refreshPhoto(pid);
+}
+
+const focalTimers = {};
+function setFocal(pid,fp){
+  const ph = PHOTOS[pid];
+  if(!ph || PENDING[pid] || ph.focalPoint===fp) return;
+  PHOTOS[pid] = Object.assign({},ph,{focalPoint:fp});
+  FOCAL_DIRTY[pid] = true;
+  $$('[data-photo-slot="'+pid+'"] img.photo').forEach(img=>{ img.style.objectPosition = fp; });
+  $$('[data-photo-tools="'+pid+'"] [data-focal]').forEach(b=>{
+    const on = b.dataset.focal===fp;
+    b.setAttribute("aria-checked",String(on));
+    b.tabIndex = on ? 0 : -1;
+  });
+  clearTimeout(focalTimers[pid]);
+  focalTimers[pid] = setTimeout(()=>{
+    STORE.setFocal(pid,PHOTOS[pid])
+      .catch(err=>{
+        toast("Focal point not saved — "+reasonFor(err),true);
+        if(SNAP[pid] !== undefined){ PHOTOS[pid] = SNAP[pid]; refreshPhoto(pid); }
+      })
+      .finally(()=>{ FOCAL_DIRTY[pid] = false; });
+  },350);
+}
+
+/* file picker fallback (touch / no clipboard) */
+let pickerPid = null;
+function openPicker(pid){
+  pickerPid = pid;
+  const input = $("#photoFile");
+  input.value = "";
+  input.click();
+}
+$("#photoFile").addEventListener("change",e=>{
+  const pid = pickerPid;
+  pickerPid = null;
+  if(pid && e.target.files.length) handleFiles(pid,e.target.files);
+});
+
+/* global target tracking: whichever product is hovered or focused receives a paste */
+let hoverPid = null, hoverSlot = null;
+function slotOf(host){
+  if(!host) return null;
+  return host.matches("[data-photo-slot]") ? host : host.querySelector("[data-photo-slot]");
+}
+function setHover(host){
+  const slot = slotOf(host);
+  if(slot===hoverSlot) return;
+  if(hoverSlot) hoverSlot.classList.remove("is-hover-target");
+  hoverSlot = slot;
+  hoverPid = slot ? slot.dataset.photoSlot : null;
+  if(slot && isEditing() && slot.hasAttribute("data-photo-target")) slot.classList.add("is-hover-target");
+}
+const productHost = t => (t && t.closest) ? t.closest("[data-product-id]") : null;
+document.addEventListener("mouseover",e=>setHover(productHost(e.target)));
+document.addEventListener("focusin",e=>setHover(productHost(e.target)));
+
+function clipboardImages(cd){
+  if(!cd) return [];
+  const files = Array.from(cd.files||[]).filter(f=>f.type.indexOf("image/")===0);
+  if(files.length) return files;
+  return Array.from(cd.items||[])
+    .filter(i=>i.kind==="file" && i.type.indexOf("image/")===0)
+    .map(i=>i.getAsFile()).filter(Boolean);
+}
+document.addEventListener("paste",e=>{
+  if(!isEditing()) return;
+  const ae = document.activeElement;
+  if(ae && ae.closest && ae.closest("input,textarea,select,[contenteditable]")) return;
+  const imgs = clipboardImages(e.clipboardData);
+  if(!imgs.length){
+    const cd = e.clipboardData;
+    if(hoverPid && cd && cd.files && cd.files.length){ e.preventDefault(); toast("Only image files can be used as product photos.",true); }
+    return;
+  }
+  e.preventDefault();
+  if(!hoverPid){ toast("Point at a product photo, then paste."); return; }
+  handleFiles(hoverPid,imgs);
+});
+
+/* drag & drop onto any element that renders a product */
+let dropSlot = null;
+const hasFiles = e => !!(e.dataTransfer && Array.from(e.dataTransfer.types||[]).indexOf("Files")>-1);
+function setDrop(slot){
+  if(slot===dropSlot) return;
+  if(dropSlot) dropSlot.classList.remove("is-drop");
+  dropSlot = slot;
+  if(slot) slot.classList.add("is-drop");
+}
+document.addEventListener("dragover",e=>{
+  if(!hasFiles(e)) return;
+  e.preventDefault();                      // never let the browser navigate to a dropped file
+  const slot = isEditing() ? slotOf(productHost(e.target)) : null;
+  setDrop(slot);
+  e.dataTransfer.dropEffect = slot ? "copy" : "none";
+});
+document.addEventListener("dragleave",e=>{ if(!e.relatedTarget) setDrop(null); });
+document.addEventListener("dragend",()=>setDrop(null));
+document.addEventListener("drop",e=>{
+  if(!hasFiles(e)) return;
+  e.preventDefault();
+  const slot = dropSlot;
+  setDrop(null);
+  if(slot && isEditing()) handleFiles(slot.dataset.photoSlot,e.dataTransfer.files);
+});
+
+/* a stored pointer whose asset is gone renders as placeholder art */
+document.addEventListener("error",e=>{
+  const img = e.target;
+  if(!(img instanceof HTMLImageElement) || !img.classList.contains("photo")) return;
+  const slot = img.closest("[data-photo-slot]");
+  const p = slot && byId(slot.dataset.photoSlot);
+  if(!p) return;
+  img.remove();
+  slot.classList.remove("has-photo");
+  slot.insertAdjacentHTML("afterbegin",flatArt(p.kind)+regMarks());
+},true);
+
+/* keyboard: Enter/Space opens the picker; arrows move the focal point */
+document.addEventListener("keydown",e=>{
+  const t = e.target;
+  if(!(t instanceof Element)) return;
+  if(t.matches("[data-photo-target]") && (e.key==="Enter"||e.key===" ")){
+    e.preventDefault();
+    if(isEditing()) openPicker(t.dataset.photoSlot);
+    return;
+  }
+  if(t.matches("[data-focal]")){
+    const step = {ArrowRight:1,ArrowLeft:-1,ArrowDown:3,ArrowUp:-3}[e.key];
+    if(step===undefined) return;
+    e.preventDefault();
+    const i = FOCAL.findIndex(f=>f[0]===t.dataset.focal);
+    const fp = FOCAL[(i+step+9)%9][0];
+    setFocal(t.dataset.pid,fp);
+    const next = t.parentElement.querySelector('[data-focal="'+fp+'"]');
+    if(next) next.focus();
+  }
+});
+
+/* mode: who may edit, and whether editing is switched on */
+function applyPhotoModeUI(){
+  document.body.classList.toggle("photo-edit",isEditing());
+  const slot = $("#utilityRight");
+  if(canManagePhotos()){
+    slot.classList.remove("utility-bar__item--second");
+    slot.innerHTML = '<button class="utility-bar__toggle" type="button" id="photoMode" aria-pressed="'+editPref+'">Photo editing <span class="utility-bar__state">'+(editPref?"On":"Off")+'</span></button>'+
+      (PHOTO_MODE==="local" ? ' <span class="meta utility-bar__note">· Local preview, not saved</span>' : "");
+  }else{
+    slot.classList.add("utility-bar__item--second");
+    slot.textContent = "FREE SHIPPING OVER ฿2,500";
+  }
+}
+function rerenderAll(){
+  render();
+  renderCartDrawer();
+}
+function initPhotos(){
+  applyPhotoModeUI();
+  if(PHOTO_MODE==="local") return;
+  Promise.all([window.claude.use("db"),window.claude.use("assets")]).then(([db,assets])=>{
+    DB = db; ASSETS = assets;
+    PHOTO_MODE = (db && assets) ? "editor" : "reader";
+    applyPhotoModeUI();
+    if(isEditing()) rerenderAll();
+    if(!db) return;
+    db.collection("products").onSnapshot(snap=>{
+      snap.docChanges().forEach(ch=>{
+        const pid = ch.doc.id;
+        if(!byId(pid)) return;
+        const d = ch.type==="removed" ? null : sanitizePhoto((ch.doc.data()||{}).photo);
+        SNAP[pid] = d;
+        if(PENDING[pid] || FOCAL_DIRTY[pid]) return;
+        if(JSON.stringify(PHOTOS[pid]||null)===JSON.stringify(d)) return;
+        PHOTOS[pid] = d;
+        refreshPhoto(pid);
+      });
+    },err=>{
+      if(err && err.code==="revoked"){ PHOTO_MODE="reader"; applyPhotoModeUI(); rerenderAll(); }
+    });
+  }).catch(()=>{ PHOTO_MODE="reader"; applyPhotoModeUI(); });
+}
+
+/* ============================================================
+   EVENT DELEGATION
+   ============================================================ */
+document.addEventListener("click",e=>{
+  const t = e.target;
+  const closest = s => t.closest(s);
+
+  if(closest("[data-close-layer]")){ closeLayer(document.getElementById(closest("[data-close-layer]").dataset.closeLayer)); return; }
+  if(closest("[data-close-on-nav]") && activeLayer){ closeLayer(); return; }
+
+  if(closest("#menuOpen")){ openLayer("menuOverlay",$("#menuOpen")); return; }
+  if(closest("#searchOpen")){ openLayer("searchOverlay",$("#searchOpen")); runSearch(""); return; }
+  if(closest("#cartOpen")){ openLayer("cartDrawer",$("#cartOpen")); return; }
+  if(closest("#gridToggle")){ toggleGrid(); return; }
+
+  if(closest("#filterToggle")){ toggleFilter(); return; }
+  if(closest("#applyFilters")){ toggleFilter(false); return; }
+  if(closest("#resetFilters")||closest("#clearFilters")){ location.hash = "#/shop"; toggleFilter(false); return; }
+  const chip = closest("[data-filter]");
+  if(chip){ updateFilter(chip.dataset.filter,chip.dataset.value); return; }
+
+  if(closest("#photoMode")){
+    editPref = !editPref;
+    try{ localStorage.setItem("unixa.photoEdit",editPref?"on":"off"); }catch(err){}
+    applyPhotoModeUI();
+    rerenderAll();
+    return;
+  }
+  const focalBtn = closest("[data-focal]");
+  if(focalBtn){ setFocal(focalBtn.dataset.pid,focalBtn.dataset.focal); return; }
+  const replaceBtn = closest("[data-photo-replace]");
+  if(replaceBtn){ openPicker(replaceBtn.dataset.photoReplace); return; }
+  const removeBtn = closest("[data-photo-remove]");
+  if(removeBtn){
+    if(removeBtn.dataset.armed!=="1"){
+      removeBtn.dataset.armed = "1";
+      removeBtn.textContent = "Confirm remove";
+      clearTimeout(removeBtn._armTimer);
+      removeBtn._armTimer = setTimeout(()=>{
+        if(removeBtn.isConnected){ removeBtn.dataset.armed=""; removeBtn.textContent="Remove"; }
+      },4000);
+      return;
+    }
+    removePhoto(removeBtn.dataset.photoRemove);
+    return;
+  }
+  const photoTarget = closest("[data-photo-target]");
+  if(photoTarget && isEditing()){ openPicker(photoTarget.dataset.photoSlot); return; }
+
+  const swatch = closest("[data-color]");
+  if(swatch){
+    $$("[data-color]").forEach(b=>b.setAttribute("aria-pressed","false"));
+    swatch.setAttribute("aria-pressed","true");
+    $("#colorLabel").textContent = COLORWAYS[swatch.dataset.color].label;
+    return;
+  }
+  const size = closest("[data-size]");
+  if(size && !size.disabled){
+    $$("[data-size]").forEach(b=>b.setAttribute("aria-pressed","false"));
+    size.setAttribute("aria-pressed","true");
+    $("#sizeError").textContent = "";
+    return;
+  }
+  if(closest("#sizeGuide")){ toast("Size guide not built in this prototype"); return; }
+
+  if(closest("#addToCart")){
+    const btn = closest("#addToCart");
+    const p = byId(btn.dataset.id);
+    const color = ($("[data-color][aria-pressed='true']")||{}).dataset ? $("[data-color][aria-pressed='true']").dataset.color : p.colors[0];
+    const sizeBtn = $("[data-size][aria-pressed='true']");
+    if(!sizeBtn){ $("#sizeError").textContent = "Select a size to continue."; return; }
+    addToCart(p.id,color,sizeBtn.dataset.size,1);
+    toast(p.name+" added to bag");
+    openLayer("cartDrawer",$("#cartOpen"));
+    return;
+  }
+
+  const qtyBtn = closest("[data-qty]");
+  if(qtyBtn){
+    const line = cart.find(l=>l.key===qtyBtn.dataset.key);
+    if(line) setQty(line.key,line.qty+(qtyBtn.dataset.qty==="inc"?1:-1));
+    return;
+  }
+  const rm = closest("[data-remove]");
+  if(rm){ setQty(rm.dataset.remove,0); toast("Removed from bag"); return; }
+
+  const acc = closest(".accordion__trigger");
+  if(acc){
+    const item = acc.parentElement;
+    const open = item.classList.toggle("is-open");
+    acc.setAttribute("aria-expanded",String(open));
+    acc.querySelector(".accordion__sign").textContent = open?"−":"+";
+    return;
+  }
+});
+
+document.addEventListener("change",e=>{
+  if(e.target.id==="sortSelect"){
+    const state = parseQuery();
+    state.sort = e.target.value;
+    location.hash = buildHash(state);
+  }
+});
+
+document.addEventListener("input",e=>{
+  if(e.target.id==="searchInput") runSearch(e.target.value);
+});
+
+document.addEventListener("submit",e=>{
+  const form = e.target;
+  if(form.id==="newsletterForm"){
+    e.preventDefault();
+    const input = $("#newsletterEmail"), err = $("#newsletterError");
+    const ok = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(input.value.trim());
+    if(!ok){
+      input.setAttribute("aria-invalid","true");
+      err.textContent = "Please enter a valid email address.";
+      input.focus();
+    }else{
+      input.removeAttribute("aria-invalid");
+      err.textContent = "";
+      input.value = "";
+      toast("Subscribed — check your inbox");
+    }
+    return;
+  }
+  if(form.id==="checkoutForm"){
+    e.preventDefault();
+    const rules = [
+      {id:"coEmail",test:v=>/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v),msg:"Please enter a valid email address."},
+      {id:"coFirst",test:v=>v.length>0,msg:"Please enter your first name."},
+      {id:"coLast",test:v=>v.length>0,msg:"Please enter your last name."},
+      {id:"coAddress",test:v=>v.length>3,msg:"Please enter a street address."},
+      {id:"coCity",test:v=>v.length>0,msg:"Please enter a city."},
+      {id:"coPost",test:v=>/^\d{5}$/.test(v),msg:"Postal code must be 5 digits."}
+    ];
+    let firstBad=null;
+    rules.forEach(r=>{
+      const el = document.getElementById(r.id);
+      const errEl = $("[data-error-for='"+r.id+"']");
+      const ok = r.test(el.value.trim());
+      el.setAttribute("aria-invalid",String(!ok));
+      errEl.textContent = ok?"":r.msg;
+      if(!ok && !firstBad) firstBad = el;
+    });
+    if(firstBad){ firstBad.focus(); $("#checkoutStatus").textContent = "CHECK THE HIGHLIGHTED FIELDS"; return; }
+    const btn = $("#placeOrder");
+    btn.disabled = true; btn.textContent = "Placing order…";
+    $("#checkoutStatus").textContent = "";
+    setTimeout(()=>{
+      cart = []; saveCart(); syncCart();
+      $("#main").innerHTML = '<section class="page-head container"><h1 class="h1">Order placed</h1></section>'+
+        '<section class="container"><div class="empty-state"><span class="label">Confirmation</span>'+
+        '<h2 class="h2">Thank you. Your order is confirmed.</h2>'+
+        '<p class="body caption">A confirmation has been sent to your email. Prototype — no payment was processed and no order exists.</p>'+
+        '<a class="link" href="#/shop">Continue shopping <span class="link__arrow">→</span></a></div></section>';
+      window.scrollTo(0,0);
+    },700);
+    return;
+  }
+  if(form.id==="signinForm"){
+    e.preventDefault();
+    toast("Prototype — authentication is not wired");
+  }
+});
+
+/* header scroll state */
+let ticking=false;
+window.addEventListener("scroll",()=>{
+  if(ticking) return;
+  ticking = true;
+  requestAnimationFrame(()=>{
+    $("#siteHeader").classList.toggle("is-scrolled",window.scrollY>8);
+    ticking=false;
+  });
+},{passive:true});
+
+/* routing */
+window.addEventListener("hashchange",()=>{
+  const prev = sessionStorage.getItem("unixa.path");
+  render();
+  const path = location.hash.split("?")[0];
+  if(prev!==path) window.scrollTo(0,0);
+  try{ sessionStorage.setItem("unixa.path",path); }catch(err){}
+  if(activeLayer) closeLayer();
+});
+
+render();
+syncCart();
+initPhotos();
+</script>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Brand","name":"UNIXA","description":"Swiss-design fashion e-commerce prototype. Objects for daily use, designed in Bangkok.","url":"https://unixa.example"}
+</script>
+</body>
+</html>

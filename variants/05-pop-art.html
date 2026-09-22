@@ -1,0 +1,981 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UNIXA Pop Art</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Noto+Sans+Thai:wght@400;500;600;700;800;900&display=swap">
+<style>
+  :root{
+    --ink:#14120f;
+    --paper:#faf6ee;
+    --paper-dim:#f0ead9;
+    --paper-line:rgba(20,18,15,0.12);
+    --red:#ff2d2d;
+    --pink:#ff3d81;
+    --yellow:#ffd400;
+    --blue:#0047ff;
+    --orange:#ff6b1a;
+    --muted:#6b6559;
+    --star:#e2a400;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:"Noto Sans Thai","Noto Sans",ui-sans-serif,system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .display{font-family:"Anton","Noto Sans Thai",sans-serif;text-transform:uppercase;letter-spacing:-0.01em;text-wrap:balance;font-weight:400;}
+  img,svg{display:block;}
+  a{color:inherit;text-decoration:none;}
+  button{font:inherit;cursor:pointer;color:inherit;}
+  :focus-visible{outline:3px solid var(--blue);outline-offset:2px;}
+
+  /* ---------- top bar ---------- */
+  .topbar{background:var(--ink);color:var(--paper);border-bottom:3px solid var(--yellow);font-size:11px;font-weight:700;letter-spacing:.04em;}
+  .topbar-inner{max-width:1240px;margin:0 auto;padding:7px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px;}
+  .topbar-msg{display:flex;align-items:center;gap:8px;min-width:0;}
+  .topbar-msg .burst{color:var(--yellow);flex:none;}
+  .langbtn{background:transparent;border:2px solid rgba(250,246,238,.5);border-radius:999px;color:var(--paper);font-size:11px;font-weight:800;letter-spacing:.06em;padding:3px 12px;flex:none;}
+  .langbtn:hover{border-color:var(--yellow);color:var(--yellow);}
+  .langbtn b{color:var(--yellow);}
+
+  /* ---------- navbar ---------- */
+  .navbar{background:var(--paper);border-bottom:3px solid var(--ink);}
+  .navbar-inner{max-width:1240px;margin:0 auto;padding:16px 24px;display:flex;align-items:center;gap:28px;}
+  .logo{position:relative;font-size:28px;line-height:1;display:flex;align-items:center;}
+  .logo .dot{position:absolute;top:-8px;left:-10px;width:11px;height:11px;border-radius:50%;background:var(--yellow);border:2px solid var(--ink);}
+  .navsearch{flex:1;max-width:520px;display:flex;align-items:center;gap:8px;height:42px;padding:0 16px;border:2px solid var(--ink);border-radius:999px;background:#fff;color:var(--muted);font-size:14px;}
+  .navsearch svg{flex:none;}
+  .nav-icons{display:flex;align-items:center;gap:18px;margin-left:auto;}
+  .icon-btn{position:relative;}
+  .cart-badge{position:absolute;top:-6px;right:-8px;width:17px;height:17px;border-radius:50%;background:var(--red);color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid var(--paper);}
+  .avatar-chip{width:34px;height:34px;border-radius:50%;background:var(--yellow);border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex:none;}
+
+  /* ---------- buttons ---------- */
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 30px;border-radius:999px;font-weight:800;font-size:13px;letter-spacing:.05em;text-transform:uppercase;border:2px solid var(--ink);}
+  .btn-primary{background:var(--red);color:#fff;}
+  .btn-primary:hover{background:var(--ink);}
+  .btn-ghost{background:#fff;color:var(--ink);}
+  .btn-ghost:hover{background:var(--paper-dim);}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative;overflow:hidden;padding:72px 24px 80px;text-align:center;border-bottom:3px solid var(--ink);}
+  .hero::before{content:"";position:absolute;inset:0;background-image:radial-gradient(var(--ink) 1.4px,transparent 1.4px);background-size:16px 16px;opacity:.06;pointer-events:none;}
+  .hero-inner{position:relative;max-width:760px;margin:0 auto;}
+  .kicker{display:inline-flex;align-items:center;gap:6px;background:var(--yellow);border:2px solid var(--ink);border-radius:999px;padding:6px 16px;font-size:11px;font-weight:800;letter-spacing:.08em;transform:rotate(-2deg);box-shadow:3px 3px 0 var(--ink);}
+  .hero h1{margin:26px 0 0;font-size:clamp(44px,8vw,92px);line-height:.94;}
+  .hero h1 .hit{color:var(--red);}
+  .hero p.sub{max-width:480px;margin:22px auto 0;font-size:16px;color:var(--muted);font-weight:500;}
+  .hero-ctas{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:30px;}
+  .hero-badges{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:34px;}
+  .badge-pill{display:inline-flex;align-items:center;gap:7px;background:#fff;border:2px solid var(--ink);border-radius:999px;padding:8px 16px;font-size:12px;font-weight:700;box-shadow:3px 3px 0 var(--ink);}
+
+  /* ---------- section shell ---------- */
+  .section{max-width:1240px;margin:0 auto;padding:56px 24px;}
+  .band{background:var(--paper-dim);border-top:3px solid var(--ink);border-bottom:3px solid var(--ink);}
+  .band > .section{padding-top:56px;padding-bottom:64px;}
+  .section-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:#fff;border:2px solid var(--ink);border-radius:18px;padding:18px 24px;box-shadow:4px 4px 0 var(--ink);margin-bottom:36px;}
+  .section-head-left{display:flex;align-items:center;gap:16px;}
+  .section-icon{width:48px;height:48px;border-radius:12px;background:var(--yellow);border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;flex:none;}
+  .section-head h2{margin:0;font-size:26px;line-height:1;}
+  .eyebrow{display:block;font-size:10px;font-weight:700;letter-spacing:.14em;color:var(--muted);margin-top:5px;text-transform:uppercase;}
+
+  /* =====================================================
+     PHOTO FRAMES  (one component, every surface)
+     ===================================================== */
+  .pf{display:block;}
+  .fw{position:relative;}
+  .frame{position:relative;overflow:hidden;cursor:pointer;background:var(--paper-dim);outline-offset:-3px;-webkit-tap-highlight-color:transparent;}
+  .r34{aspect-ratio:3/4;} .r11{aspect-ratio:1/1;} .r169{aspect-ratio:16/9;} .r45{aspect-ratio:4/5;}
+  .frame .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+  .frame .ph svg{height:46%;width:auto;aspect-ratio:1/1;}
+  .frame.has .ph{visibility:hidden;}
+  .pimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  .over{position:absolute;z-index:2;pointer-events:none;}
+  .over a{pointer-events:auto;}
+  .frame:hover{outline:3px dashed var(--ink);}
+  .frame:focus-visible{outline:3px solid var(--blue);}
+  [data-photo-id].dragging .frame{outline:4px solid var(--red);}
+  [data-photo-id].dragging .frame::after{content:"";position:absolute;inset:0;background:rgba(255,45,45,.2);z-index:3;}
+  .hint{position:absolute;left:8px;right:8px;bottom:8px;text-align:center;font-size:10px;font-weight:800;letter-spacing:.02em;line-height:1.3;background:var(--yellow);border:2px solid var(--ink);border-radius:999px;padding:4px 10px;opacity:.75;pointer-events:none;transition:opacity .15s;z-index:1;}
+  .frame:hover .hint,.frame:focus-visible .hint{opacity:1;}
+  @media (hover:none){.h-mouse{display:none;}}
+  @media (hover:hover){.h-touch{display:none;}}
+  .busy{position:absolute;inset:0;z-index:4;background:rgba(250,246,238,.72);display:flex;align-items:center;justify-content:center;}
+  .busy[hidden]{display:none;}
+  .spin{width:30px;height:30px;border:4px solid var(--ink);border-right-color:transparent;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  @media (prefers-reduced-motion:reduce){.spin{animation:none;border-right-color:var(--ink);border-style:dotted;}}
+
+  .tools{display:flex;align-items:center;gap:12px;padding:8px 12px;background:#fff;border-top:2px solid var(--ink);}
+  .tools[hidden]{display:none;}
+  .fp{display:grid;grid-template-columns:repeat(3,18px);gap:3px;flex:none;}
+  .fp button{width:18px;height:18px;padding:0;border:2px solid var(--ink);border-radius:50%;background:#fff;}
+  .fp button:hover{background:var(--yellow);}
+  .fp button[aria-pressed="true"]{background:var(--red);}
+  .tl-side{display:flex;flex-direction:column;gap:6px;min-width:0;}
+  .fp-cap{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+  .tl-actions{display:flex;gap:6px;flex-wrap:wrap;}
+  .tl{font-size:11px;font-weight:800;border:2px solid var(--ink);border-radius:999px;background:#fff;padding:3px 10px;min-height:28px;}
+  .tl:hover{background:var(--yellow);}
+  .tl.remove:hover{background:var(--red);color:#fff;}
+  @media (pointer:coarse){.fp{grid-template-columns:repeat(3,26px);}.fp button{width:26px;height:26px;}.tl{min-height:40px;padding:6px 14px;}}
+
+  /* toasts */
+  .toasts{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:100;display:flex;flex-direction:column;gap:8px;align-items:center;width:min(92vw,440px);pointer-events:none;}
+  .toast{display:flex;align-items:center;gap:10px;background:#fff;border:2px solid var(--ink);border-radius:14px;padding:10px 16px;font-size:13px;font-weight:700;box-shadow:4px 4px 0 var(--ink);pointer-events:auto;}
+  .toast.ok{background:var(--yellow);}
+  .toast.err{background:var(--red);color:#fff;}
+  .toast.err .spin{border-color:#fff;}
+  .toast .spin{width:16px;height:16px;border-width:3px;flex:none;}
+
+  /* ---------- campaign ---------- */
+  .camp{max-width:1240px;margin:0 auto;padding:56px 24px 0;}
+  .camp-d .frame{border:2px solid var(--ink);border-radius:22px;box-shadow:7px 7px 0 var(--ink);}
+  .camp-d .tools{margin-top:16px;border:2px solid var(--ink);border-radius:14px;}
+  .camp-d .ph{background:radial-gradient(circle at 80% 50%,var(--red) 0 22%,transparent 22.4%),radial-gradient(circle at 80% 50%,var(--ink) 0 25%,transparent 25.4%),radial-gradient(rgba(255,255,255,.35) 1.4px,transparent 1.4px) 0 0/16px 16px,var(--blue);}
+  .camp-type{left:5%;top:0;bottom:0;width:44%;display:flex;flex-direction:column;justify-content:center;gap:16px;align-items:flex-start;}
+  .camp-type h2{margin:0;font-size:clamp(40px,6.4vw,92px);line-height:.92;color:#fff;text-shadow:4px 4px 0 var(--ink);}
+  .camp-type p{margin:0;max-width:340px;color:#fff;font-weight:700;font-size:15px;text-shadow:2px 2px 0 var(--ink);}
+  .camp-m{display:none;}
+  .camp-m .frame{border:2px solid var(--ink);border-radius:22px;box-shadow:6px 6px 0 var(--ink);}
+  .camp-m .tools{margin-top:14px;border:2px solid var(--ink);border-radius:14px;}
+  .camp-m .ph{background:radial-gradient(circle at 50% 40%,var(--red) 0 24%,transparent 24.4%),radial-gradient(circle at 50% 40%,var(--ink) 0 27%,transparent 27.4%),radial-gradient(rgba(20,18,15,.35) 1.4px,transparent 1.4px) 0 0/14px 14px,var(--yellow);}
+  .camp-m-type{padding-top:24px;}
+  .camp-m-type h2{margin:0 0 12px;font-size:clamp(44px,14vw,72px);line-height:.94;}
+  .camp-m-type p{margin:0 0 18px;color:var(--muted);font-weight:500;}
+
+  /* ---------- category tiles ---------- */
+  .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+  .tile{background:#fff;border:2px solid var(--ink);border-radius:16px;overflow:hidden;box-shadow:4px 4px 0 var(--ink);}
+  .tile-label{left:12px;top:12px;background:var(--ink);color:#fff;border-radius:10px;padding:6px 12px;}
+  .tile-label .display{font-size:22px;line-height:1;display:block;}
+  .tile-label small{font-size:11px;font-weight:700;opacity:.8;}
+
+  /* ---------- product grid ---------- */
+  .grid{display:grid;gap:22px 18px;grid-template-columns:repeat(3,1fr);align-items:start;}
+  .card{background:#fff;border-radius:16px;overflow:hidden;border:2px solid var(--ink);box-shadow:4px 4px 0 var(--ink);transition:transform .18s ease,box-shadow .18s ease;}
+  .card:hover{transform:translate(-2px,-6px);box-shadow:7px 7px 0 var(--ink);}
+  .card.odd{transform:translateY(20px);}
+  .card.odd:hover{transform:translateY(20px) translate(-2px,-6px);}
+  .promo-tag{top:10px;right:10px;background:var(--red);border:2px solid var(--ink);color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px;transform:rotate(4deg);box-shadow:3px 3px 0 var(--ink);}
+  .sold-tag{inset:0;background:rgba(20,18,15,.5);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:12px;letter-spacing:.14em;}
+  .card-body{padding:14px 16px 16px;}
+  .card-name{font-size:14px;font-weight:600;margin:0 0 6px;line-height:1.3;}
+  .card-meta{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:10px;}
+  .stars{color:var(--star);}
+  .card-foot{display:flex;align-items:flex-end;justify-content:space-between;padding-top:10px;border-top:1px solid var(--paper-line);}
+  .price{font-weight:800;font-size:18px;font-variant-numeric:tabular-nums;}
+  .price.sale{color:var(--red);}
+  .price-strike{display:block;font-size:11px;color:var(--muted);text-decoration:line-through;font-weight:500;}
+  .stock-chip{font-size:10px;font-weight:700;background:rgba(255,212,0,.35);border:1px solid var(--ink);border-radius:999px;padding:3px 8px;}
+
+  /* ---------- featured ---------- */
+  .feature-row{display:flex;gap:18px;overflow-x:auto;padding:0 6px 14px 0;}
+  .feature-card{flex:0 0 220px;background:#fff;border:2px solid var(--ink);border-radius:18px;overflow:hidden;box-shadow:4px 4px 0 var(--ink);}
+  .sponsor-tag{top:9px;left:9px;background:var(--yellow);border:2px solid var(--ink);font-size:9px;font-weight:800;letter-spacing:.08em;padding:3px 8px;border-radius:999px;}
+  .feature-body{padding:12px 14px 14px;}
+
+  /* ---------- editorial ---------- */
+  .editorial{display:grid;grid-template-columns:minmax(0,520px) 1fr;gap:48px;align-items:center;}
+  .editorial-media{background:#fff;border:2px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:7px 7px 0 var(--ink);}
+  .editorial-copy h2{margin:10px 0 18px;font-size:clamp(36px,5vw,64px);line-height:.98;}
+  .editorial-copy p{margin:0 0 12px;max-width:440px;font-size:16px;line-height:1.7;}
+  .editorial-copy p.th{color:var(--muted);font-size:14px;}
+  .editorial-copy .btn{margin-top:14px;}
+
+  /* ---------- PDP + cart ---------- */
+  .duo{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:28px;align-items:start;}
+  .pdp{display:grid;grid-template-columns:minmax(0,320px) 1fr;gap:32px;background:#fff;border:2px solid var(--ink);border-radius:22px;padding:24px;box-shadow:6px 6px 0 var(--ink);}
+  .pdp-left{border:2px solid var(--ink);border-radius:16px;overflow:hidden;align-self:start;}
+  .pdp-info .eyebrow{margin:0;font-size:12px;letter-spacing:.02em;text-transform:none;font-weight:600;}
+  .pdp-info h3{font-size:26px;margin:6px 0 12px;line-height:1.2;}
+  .pdp-price{display:flex;align-items:baseline;gap:12px;margin:14px 0 22px;}
+  .pdp-price .now{font-family:"Anton",sans-serif;font-size:42px;color:var(--red);}
+  .pdp-price .was{font-size:16px;color:var(--muted);text-decoration:line-through;}
+  .pdp-cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px;}
+  .seller-card{display:flex;align-items:center;gap:12px;border:2px solid var(--ink);border-radius:14px;padding:12px 14px;max-width:340px;}
+  .seller-card .name{font-weight:700;font-size:14px;}
+  .seller-card .role{font-size:11px;color:var(--muted);}
+  .cart{background:#fff;border:2px solid var(--ink);border-radius:22px;padding:22px 22px 20px;}
+  .cart h3{margin:0 0 4px;font-size:22px;}
+  .cart-row{display:grid;grid-template-columns:72px 1fr auto;gap:14px;align-items:center;padding:14px 0;border-top:1px solid var(--paper-line);}
+  .cart-row:first-of-type{margin-top:12px;}
+  .cart-row .frame{border:2px solid var(--ink);border-radius:8px;}
+  .cart-row .n{font-size:13px;font-weight:600;line-height:1.3;}
+  .cart-row .q{font-size:11px;color:var(--muted);margin-top:3px;}
+  .cart-row .p{font-weight:800;font-size:15px;font-variant-numeric:tabular-nums;}
+  .cart-total{display:flex;justify-content:space-between;align-items:baseline;border-top:2px solid var(--ink);padding-top:14px;margin-top:4px;font-weight:800;}
+  .cart-total .v{font-size:22px;font-variant-numeric:tabular-nums;}
+  .cart .btn{width:100%;justify-content:center;margin-top:16px;}
+
+  /* ---------- token strip ---------- */
+  .tokens{background:var(--ink);color:var(--paper);padding:44px 24px 56px;}
+  .tokens-inner{max-width:1240px;margin:0 auto;}
+  .tokens h4{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(250,246,238,.55);margin:0 0 18px;font-weight:700;}
+  .swatches{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:36px;}
+  .swatch{width:76px;}
+  .swatch-chip{width:76px;height:76px;border-radius:14px;border:2px solid rgba(250,246,238,.25);margin-bottom:8px;}
+  .swatch-label{font-size:10px;font-weight:700;letter-spacing:.04em;color:rgba(250,246,238,.7);}
+  .type-demo{display:flex;gap:48px;flex-wrap:wrap;align-items:flex-end;margin-bottom:36px;}
+  .type-demo .display{font-size:40px;}
+  .type-demo .sample-body{max-width:320px;font-size:14px;color:rgba(250,246,238,.7);line-height:1.6;margin:0;}
+  .cap{font-size:11px;letter-spacing:.1em;color:rgba(250,246,238,.5);margin-bottom:8px;text-transform:uppercase;font-weight:700;}
+  .ratios{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px;}
+  .ratio{display:flex;align-items:center;gap:10px;border:2px solid rgba(250,246,238,.25);border-radius:12px;padding:8px 12px;font-size:12px;font-weight:600;color:rgba(250,246,238,.85);}
+  .ratio b{font-family:"Anton",sans-serif;font-weight:400;font-size:18px;color:var(--yellow);letter-spacing:.02em;}
+  .cfg{margin:0;max-width:720px;background:rgba(250,246,238,.06);border:2px solid rgba(250,246,238,.2);border-radius:12px;padding:14px 16px;font:12px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:rgba(250,246,238,.85);overflow-x:auto;white-space:pre;}
+
+  @media (max-width:860px){
+    .grid{grid-template-columns:repeat(2,1fr);}
+    .tiles{grid-template-columns:repeat(2,1fr);}
+    .navsearch{display:none;}
+    .card.odd{transform:none;}
+    .card.odd:hover{transform:translate(-2px,-6px);}
+    .camp-d{display:none;}
+    .camp-m{display:block;}
+    .camp{padding-top:40px;}
+    .editorial{grid-template-columns:1fr;gap:28px;}
+    .duo{grid-template-columns:1fr;}
+    .pdp{grid-template-columns:1fr;}
+    .pdp-left{max-width:360px;}
+    .topbar-msg span:not(.burst){overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  }
+  @media (max-width:520px){
+    .section{padding:44px 16px;}
+    .grid{gap:18px 12px;}
+    .card-body{padding:10px 12px 12px;}
+    .tools{padding:8px;gap:8px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-msg"><span class="burst">●</span><span id="howto"></span></div>
+    <button class="langbtn" id="lang" type="button" aria-label="Switch language / เปลี่ยนภาษา"><b>TH</b> / EN</button>
+  </div>
+</div>
+
+<div class="navbar">
+  <div class="navbar-inner">
+    <div class="logo display"><span class="dot"></span>UNIXA</div>
+    <div class="navsearch">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      หาของที่ใช่ในแคมปัส…
+    </div>
+    <div class="nav-icons">
+      <div class="icon-btn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.36-1.99 1.26 12A1.13 1.13 0 0 1 19.62 21H4.25a1.13 1.13 0 0 1-1.12-1.24l1.26-12A1.13 1.13 0 0 1 5.51 7.5h12.97c.58 0 1.06.44 1.12 1.01Z"/></svg>
+        <span class="cart-badge">3</span>
+      </div>
+      <div class="avatar-chip">P</div>
+    </div>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="hero-inner">
+    <span class="kicker">MADE EASY AT UNIXA</span>
+    <h1 class="display">WEAR THE<br><span class="hit">ATTENTION</span></h1>
+    <p class="sub">ของมือสอง ของทำมือ สตรีทแวร์จากรุ่นพี่รุ่นน้องในแคมปัส — เลือกง่าย ซื้อไว ไม่มีดราม่า</p>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href="#grid">SHOP THE DROP →</a>
+      <a class="btn btn-ghost" href="#">VIEW COLLECTIONS</a>
+    </div>
+    <div class="hero-badges">
+      <span class="badge-pill">✓ Verified Sellers</span>
+      <span class="badge-pill">🛡 Safe &amp; Secure</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CAMPAIGN: two compositions, two photos (16:9 desktop / 4:5 mobile) ===== -->
+<section class="camp" aria-label="Campaign">
+  <div class="camp-d" data-photo-id="campaign-desktop">
+    <div class="pf" data-ratio="169">
+      <div class="ph"></div>
+      <div class="over camp-type">
+        <h2 class="display">Make some<br>noise</h2>
+        <p>Loud colors. Zero apologies.</p>
+        <a class="btn btn-primary" href="#grid">Shop the drop →</a>
+      </div>
+    </div>
+  </div>
+  <div class="camp-m">
+    <div data-photo-id="campaign-mobile">
+      <div class="pf" data-ratio="45"><div class="ph"></div></div>
+    </div>
+    <div class="camp-m-type">
+      <h2 class="display">Make some<br>noise</h2>
+      <p>Loud colors. Zero apologies.</p>
+      <a class="btn btn-primary" href="#grid">Shop the drop →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CATEGORY TILES (3:4) ===== -->
+<section class="section">
+  <div class="section-head">
+    <div class="section-head-left">
+      <div class="section-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#14120f" stroke-width="2"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg></div>
+      <div><h2 class="display">Shop by Category</h2><span class="eyebrow">เลือกตามหมวด</span></div>
+    </div>
+  </div>
+  <div class="tiles">
+    <div class="tile" data-photo-id="cat-tops">
+      <div class="pf" data-ratio="34">
+        <div class="ph" style="background:repeating-linear-gradient(45deg,#ffe680,#ffe680 10px,#ffd400 10px,#ffd400 20px);"><svg viewBox="0 0 24 24" fill="none" stroke="#14120f" stroke-width="1.3"><path d="M8 3 5 6l2 3-1 12h12L17 9l2-3-3-3-2 2h-4L8 3Z"/></svg></div>
+        <div class="over tile-label"><span class="display">Tops</span><small>เสื้อ</small></div>
+      </div>
+    </div>
+    <div class="tile" data-photo-id="cat-shoes">
+      <div class="pf" data-ratio="34">
+        <div class="ph" style="background:radial-gradient(circle at 30% 30%,#cfe3ff,#a9c6ff 70%);"><svg viewBox="0 0 24 24" fill="none" stroke="#14120f" stroke-width="1.3"><path d="M3 16l3-9h3l1.5 4h5L17 7h3l1 9"/><path d="M3 16h18v3H3z"/></svg></div>
+        <div class="over tile-label"><span class="display">Footwear</span><small>รองเท้า</small></div>
+      </div>
+    </div>
+    <div class="tile" data-photo-id="cat-bags">
+      <div class="pf" data-ratio="34">
+        <div class="ph" style="background:radial-gradient(#14120f 1.6px,transparent 1.6px) 0 0/16px 16px,#f0ead9;"><svg viewBox="0 0 24 24" fill="none" stroke="#14120f" stroke-width="1.3"><path d="M4 8h16l-1.5 12h-13L4 8Z"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></svg></div>
+        <div class="over tile-label"><span class="display">Bags</span><small>กระเป๋า</small></div>
+      </div>
+    </div>
+    <div class="tile" data-photo-id="cat-caps">
+      <div class="pf" data-ratio="34">
+        <div class="ph" style="background:linear-gradient(135deg,#ffd7e6,#ff9dc0);"><svg viewBox="0 0 24 24" fill="none" stroke="#14120f" stroke-width="1.3"><path d="M4 8c0-2.2 3.6-4 8-4s8 1.8 8 4-3.6 4-8 4-8-1.8-8-4Z"/><path d="M4 8v3c0 1.6 2.2 3 5.5 3.6M20 8v3"/></svg></div>
+        <div class="over tile-label"><span class="display">Headwear</span><small>หมวก</small></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRODUCT GRID (3:4) ===== -->
+<div class="band" id="grid">
+  <div class="section">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="section-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#14120f" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+        <div><h2 class="display">All The Products</h2><span class="eyebrow">สินค้าทั้งหมด</span></div>
+      </div>
+      <a class="btn btn-primary" href="#" style="padding:12px 24px;">View All →</a>
+    </div>
+
+    <div class="grid">
+      <article class="card" data-photo-id="p-hoodie">
+        <div class="pf" data-ratio="34">
+          <div class="ph" style="background:repeating-linear-gradient(45deg,#ffe680,#ffe680 10px,#ffd400 10px,#ffd400 20px);"><svg viewBox="0 0 24 24" fill="none" stroke="#14120f" stroke-width="1.3"><path d="M8 4 5 7v13h14V7l-3-3M8 4l4 3 4-3M8 4c0 2 1.8 3 4 3s4-1 4-3"/></svg></div>
+          <span class="over promo-tag">-20%</span>
+        </div>
+        <div class="card-body">
+          <p class="card-name">OVERSIZED EDITION HOODIE</p>
+          <div class="card-meta"><span class="stars">★★★★☆ 4.2 (31)</span></div>
+          <div class="card-foot"><div><span class="price-strike">฿1,090</span><span class="price sale">฿890</span></div><span class="stock-chip">stock 6</span></div>
+        </div>
+      </article>
+
+      <article class="card odd" data-photo-id="p-sneaker">
+        <div class="pf" data-ratio="34">
+          <div class="ph" style="background:radial-gradient(circle at 30% 30%,#cfe3ff,#a9c6ff 70%);"><svg viewBox="0 0 24 24" fill="none" stroke="#14120f" stroke-width="1.3"><path d="M3 16l3-9h3l1.5 4h5L17 7h3l1 9"/><path d="M3 16h18v3H3z"/></svg></div>
+        </div>
+        <div class="card-body">
+          <p class="card-name">COURT CLASSIC SNEAKER</p>
+          <div class="card-meta"><span class="stars">★★★★★ 4.8 (54)</span></div>
+          <div class="card-foot"><span class="price">฿1,450</span><span class="stock-chip">stock 12</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-photo-id="p-cap">
+        <div class="pf" data-ratio="34">
+          <div class="ph" style="background:linear-gradient(135deg,#ffd7e6,#ff9dc0);"><svg viewBox="0 0 24 24" fill="none" stroke="#14120f" stroke-width="1.3"><path d="M4 8c0-2.2 3.6-4 8-4s8 1.8 8 4-3.6 4-8 4-8-1.8-8-4Z"/><path d="M4 8v3c0 1.6 2.2 3 5.5 3.6M20 8v3"/></svg></div>
+          <div class="over sold-tag">SOLD OUT</div>
+        </div>
+        <div class="card-body">
+          <p class="card-name">STREET STRIPE CAP</p>
+          <div class="card-meta"><span class="stars">★★★☆☆ 3.6 (9)</span></div>
+          <div class="card-foot"><span class="price" style="color:#a39c8c;">฿350</span><span class="stock-chip" style="background:transparent;">out</span></div>
+        </div>
+      </article>
+
+      <article class="card odd" data-photo-id="p-jacket">
+        <div class="pf" data-ratio="34">
+          <div class="ph" style="background:repeating-linear-gradient(90deg,#ffbf9e,#ffbf9e 8px,#ff6b1a 8px,#ff6b1a 16px);"><svg viewBox="0 0 24 24" fill="none" stroke="#14120f" stroke-width="1.3"><path d="M6 3h12l2 5-4 2v11H8V10L4 8Z"/></svg></div>
+          <span class="over promo-tag">-15%</span>
+        </div>
+        <div class="card-body">
+          <p class="card-name">NEON RUSH JACKET</p>
+          <div class="card-meta"><span class="stars">★★★★☆ 4.4 (18)</span></div>
+          <div class="card-foot"><div><span class="price-strike">฿2,590</span><span class="price sale">฿2,200</span></div><span class="stock-chip">stock 3</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-photo-id="p-tote">
+        <div class="pf" data-ratio="34">
+          <div class="ph" style="background:radial-gradient(#14120f 1.6px,transparent 1.6px) 0 0/16px 16px,#f0ead9;"><svg viewBox="0 0 24 24" fill="none" stroke="#14120f" stroke-width="1.3"><path d="M4 8h16l-1.5 12h-13L4 8Z"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></svg></div>
+        </div>
+        <div class="card-body">
+          <p class="card-name">CAMPUS TOTE BAG</p>
+          <div class="card-meta"><span class="stars">★★★★☆ 4.1 (22)</span></div>
+          <div class="card-foot"><span class="price">฿420</span><span class="stock-chip">stock 20</span></div>
+        </div>
+      </article>
+
+      <article class="card odd" data-photo-id="p-tee">
+        <div class="pf" data-ratio="34">
+          <div class="ph" style="background:linear-gradient(135deg,#cfe0ff,#7fa6ff);"><svg viewBox="0 0 24 24" fill="none" stroke="#14120f" stroke-width="1.3"><path d="M8 3 5 6l2 3-1 12h12L17 9l2-3-3-3-2 2h-4L8 3Z"/></svg></div>
+        </div>
+        <div class="card-body">
+          <p class="card-name">GRAPHIC BURST TEE</p>
+          <div class="card-meta"><span class="stars">★★★★★ 4.9 (67)</span></div>
+          <div class="card-foot"><span class="price">฿590</span><span class="stock-chip">stock 15</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FEATURED (3:4) ===== -->
+<section class="section">
+  <div class="section-head">
+    <div class="section-head-left">
+      <div class="section-icon" style="background:#fff;"><svg width="22" height="22" viewBox="0 0 24 24" fill="#14120f"><path d="M12 2 9.4 8.6 2 9.3l5.7 4.8L6 21l6-3.9L18 21l-1.7-6.9L22 9.3l-7.4-.7L12 2Z"/></svg></div>
+      <div><h2 class="display">Featured Collections</h2><span class="eyebrow">แนะนำพิเศษ</span></div>
+    </div>
+    <a class="btn btn-ghost" href="#" style="padding:10px 20px;">View all →</a>
+  </div>
+  <div class="feature-row">
+    <div class="feature-card" data-photo-id="f-varsity">
+      <div class="pf" data-ratio="34"><div class="ph" style="background:#ffe680;"><svg viewBox="0 0 24 24" fill="none" stroke="#14120f" stroke-width="1.3"><path d="M8 4 5 7v13h14V7l-3-3M8 4l4 3 4-3"/></svg></div><span class="over sponsor-tag">SPONSORED</span></div>
+      <div class="feature-body"><p class="card-name">RETRO VARSITY JACKET</p><span class="price">฿1,890</span></div>
+    </div>
+    <div class="feature-card" data-photo-id="f-bucket">
+      <div class="pf" data-ratio="34"><div class="ph" style="background:#ffd7e6;"><svg viewBox="0 0 24 24" fill="none" stroke="#14120f" stroke-width="1.3"><path d="M4 8c0-2.2 3.6-4 8-4s8 1.8 8 4-3.6 4-8 4-8-1.8-8-4Z"/></svg></div><span class="over sponsor-tag">SPONSORED</span></div>
+      <div class="feature-body"><p class="card-name">BUCKET HAT — SIGNAL</p><span class="price">฿320</span></div>
+    </div>
+    <div class="feature-card" data-photo-id="f-runner">
+      <div class="pf" data-ratio="34"><div class="ph" style="background:#cfe3ff;"><svg viewBox="0 0 24 24" fill="none" stroke="#14120f" stroke-width="1.3"><path d="M3 16l3-9h3l1.5 4h5L17 7h3l1 9"/></svg></div><span class="over sponsor-tag">SPONSORED</span></div>
+      <div class="feature-body"><p class="card-name">RUNNER 002 SNEAKER</p><span class="price">฿1,650</span></div>
+    </div>
+    <div class="feature-card" data-photo-id="f-archive">
+      <div class="pf" data-ratio="34"><div class="ph" style="background:#ffbf9e;"><svg viewBox="0 0 24 24" fill="none" stroke="#14120f" stroke-width="1.3"><path d="M8 3 5 6l2 3-1 12h12L17 9l2-3-3-3-2 2h-4L8 3Z"/></svg></div><span class="over sponsor-tag">SPONSORED</span></div>
+      <div class="feature-body"><p class="card-name">ARCHIVE LOGO TEE</p><span class="price">฿550</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== EDITORIAL (1:1) ===== -->
+<div class="band">
+  <div class="section">
+    <div class="editorial">
+      <div class="editorial-media" data-photo-id="editorial-1">
+        <div class="pf" data-ratio="11">
+          <div class="ph" style="background:radial-gradient(circle at 70% 30%,#ff3d81 0 18%,transparent 18.4%),repeating-linear-gradient(0deg,#faf6ee,#faf6ee 14px,#f0ead9 14px,#f0ead9 28px);"><svg viewBox="0 0 24 24" fill="none" stroke="#14120f" stroke-width="1.1"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-8 8"/></svg></div>
+        </div>
+      </div>
+      <div class="editorial-copy">
+        <span class="eyebrow" style="margin:0;">Editorial · Campus Drop Vol. 02</span>
+        <h2 class="display">Too good<br>for the closet</h2>
+        <p>Every piece here has already lived a semester on campus. Vol. 02 is the ones that were too good to stay folded in a drawer.</p>
+        <p class="th">ทุกชิ้นผ่านชีวิตในแคมปัสมาแล้วอย่างน้อยหนึ่งเทอม Vol. 02 คือชิ้นที่ดีเกินกว่าจะนอนอยู่ในตู้</p>
+        <a class="btn btn-primary" href="#grid">See the drop →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PDP + CART ROWS (3:4) ===== -->
+<section class="section">
+  <div class="duo">
+    <div class="pdp">
+      <div class="pdp-left" data-photo-id="p-hoodie">
+        <div class="pf" data-ratio="34">
+          <div class="ph" style="background:repeating-linear-gradient(45deg,#ffe680,#ffe680 10px,#ffd400 10px,#ffd400 20px);"><svg viewBox="0 0 24 24" fill="none" stroke="#14120f" stroke-width="1.2"><path d="M8 4 5 7v13h14V7l-3-3M8 4l4 3 4-3M8 4c0 2 1.8 3 4 3s4-1 4-3"/></svg></div>
+        </div>
+      </div>
+      <div class="pdp-info">
+        <span class="eyebrow">Option: Standard</span>
+        <h3>Oversized Edition Hoodie</h3>
+        <div class="card-meta" style="margin-bottom:0;gap:10px;justify-content:flex-start;"><span class="stars">★★★★☆ 4.2 · 31 reviews</span><span style="color:#1f7a45;">● In stock (6)</span></div>
+        <div class="pdp-price"><span class="was">฿1,090</span><span class="now">฿890</span></div>
+        <div class="pdp-cta">
+          <a class="btn btn-primary" href="#">Add to Cart</a>
+          <a class="btn btn-ghost" href="#">Chat Seller</a>
+        </div>
+        <div class="seller-card">
+          <div class="avatar-chip">น</div>
+          <div><div class="name">น้องเนย · Sold by</div><div class="role">คณะศิลปกรรม · ตอบไว</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cart">
+      <h3 class="display">Your Cart</h3>
+      <span class="eyebrow" style="margin:0;">3 items · ตะกร้าของคุณ</span>
+      <div class="cart-row" data-photo-id="p-hoodie">
+        <div class="pf" data-ratio="34" data-tools="off" data-hint="off"><div class="ph" style="background:repeating-linear-gradient(45deg,#ffe680,#ffe680 10px,#ffd400 10px,#ffd400 20px);"><svg viewBox="0 0 24 24" fill="none" stroke="#14120f" stroke-width="1.6"><path d="M8 4 5 7v13h14V7l-3-3M8 4l4 3 4-3"/></svg></div></div>
+        <div><div class="n">Oversized Edition Hoodie</div><div class="q">Qty 1</div></div>
+        <div class="p">฿890</div>
+      </div>
+      <div class="cart-row" data-photo-id="p-sneaker">
+        <div class="pf" data-ratio="34" data-tools="off" data-hint="off"><div class="ph" style="background:radial-gradient(circle at 30% 30%,#cfe3ff,#a9c6ff 70%);"><svg viewBox="0 0 24 24" fill="none" stroke="#14120f" stroke-width="1.6"><path d="M3 16l3-9h3l1.5 4h5L17 7h3l1 9"/><path d="M3 16h18v3H3z"/></svg></div></div>
+        <div><div class="n">Court Classic Sneaker</div><div class="q">Qty 1</div></div>
+        <div class="p">฿1,450</div>
+      </div>
+      <div class="cart-row" data-photo-id="p-tee">
+        <div class="pf" data-ratio="34" data-tools="off" data-hint="off"><div class="ph" style="background:linear-gradient(135deg,#cfe0ff,#7fa6ff);"><svg viewBox="0 0 24 24" fill="none" stroke="#14120f" stroke-width="1.6"><path d="M8 3 5 6l2 3-1 12h12L17 9l2-3-3-3-2 2h-4L8 3Z"/></svg></div></div>
+        <div><div class="n">Graphic Burst Tee</div><div class="q">Qty 1</div></div>
+        <div class="p">฿590</div>
+      </div>
+      <div class="cart-total"><span>Subtotal</span><span class="v">฿2,930</span></div>
+      <a class="btn btn-primary" href="#">Checkout</a>
+    </div>
+  </div>
+</section>
+
+<div class="tokens">
+  <div class="tokens-inner">
+    <h4>Color System</h4>
+    <div class="swatches">
+      <div class="swatch"><div class="swatch-chip" style="background:#14120f;"></div><div class="swatch-label">INK #14120F</div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#faf6ee;"></div><div class="swatch-label">PAPER #FAF6EE</div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#ff2d2d;"></div><div class="swatch-label">RED #FF2D2D</div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#ffd400;"></div><div class="swatch-label">YELLOW #FFD400</div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#0047ff;"></div><div class="swatch-label">BLUE #0047FF</div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#ff3d81;"></div><div class="swatch-label">PINK #FF3D81</div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:#ff6b1a;"></div><div class="swatch-label">ORANGE #FF6B1A</div></div>
+    </div>
+    <h4>Type Pairing</h4>
+    <div class="type-demo">
+      <div><div class="cap">Display — Anton</div><div class="display">Attention</div></div>
+      <div><div class="cap">Body / UI — Noto Sans Thai</div><p class="sample-body">ใช้กับชื่อสินค้า ราคา ตัวกรอง และปุ่มต่าง ๆ — อ่านง่ายทั้งภาษาไทยและอังกฤษ เพื่อให้ตัวระบบยังคง "เงียบ" ในขณะที่ภาพลักษณ์แบรนด์ "ตะโกน" ได้เต็มที่</p></div>
+    </div>
+    <h4>Photo Frames — fixed ratios</h4>
+    <div class="ratios">
+      <div class="ratio"><b>3:4</b> product card · gallery · cart &amp; order rows · category tile</div>
+      <div class="ratio"><b>1:1</b> editorial block</div>
+      <div class="ratio"><b>16:9</b> campaign — desktop</div>
+      <div class="ratio"><b>4:5</b> campaign — mobile</div>
+    </div>
+    <h4>Connect real storage (search CONFIG in this file)</h4>
+    <pre class="cfg">uploadUrl:     "https://api.example.com/uploads"           // POST multipart "file" → { "url": "https://cdn…/x.jpg" }
+patchProduct:  id =&gt; `https://api.example.com/products/${id}`  // PATCH { "photo": { url, width, height, focalPoint } | null }
+// both null → demo mode: files live in this browser's IndexedDB, records in localStorage</pre>
+  </div>
+</div>
+
+<input type="file" id="picker" accept="image/*" hidden>
+<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+  'use strict';
+
+  /* ------------------------------------------------------------------
+     CONFIG — leave both null for demo mode (browser-only storage).
+     ------------------------------------------------------------------ */
+  const CONFIG = {
+    uploadUrl: null,
+    patchProduct: null,
+    initialPhotos: {}            // { [id]: { url, width, height, focalPoint } } from your API
+  };
+  const MAX_EDGE = 1600, QUALITY = 0.86, MAX_BYTES = 25 * 1024 * 1024;
+  const KEY = 'unixa.photos.v1';
+
+  const NAMES = {
+    'p-hoodie': { en: 'Oversized Edition Hoodie', th: 'ฮู้ดดี้ Oversized Edition' },
+    'p-sneaker': { en: 'Court Classic Sneaker', th: 'รองเท้าผ้าใบ Court Classic' },
+    'p-cap': { en: 'Street Stripe Cap', th: 'หมวกแก๊ป Street Stripe' },
+    'p-jacket': { en: 'Neon Rush Jacket', th: 'แจ็คเก็ต Neon Rush' },
+    'p-tote': { en: 'Campus Tote Bag', th: 'กระเป๋าผ้า Campus Tote' },
+    'p-tee': { en: 'Graphic Burst Tee', th: 'เสื้อยืด Graphic Burst' },
+    'f-varsity': { en: 'Retro Varsity Jacket', th: 'แจ็คเก็ตวาร์ซิตี้ Retro' },
+    'f-bucket': { en: 'Bucket Hat — Signal', th: 'หมวกบักเก็ต Signal' },
+    'f-runner': { en: 'Runner 002 Sneaker', th: 'รองเท้าวิ่ง Runner 002' },
+    'f-archive': { en: 'Archive Logo Tee', th: 'เสื้อยืดโลโก้ Archive' },
+    'cat-tops': { en: 'Category: Tops', th: 'หมวดหมู่: เสื้อ' },
+    'cat-shoes': { en: 'Category: Footwear', th: 'หมวดหมู่: รองเท้า' },
+    'cat-bags': { en: 'Category: Bags', th: 'หมวดหมู่: กระเป๋า' },
+    'cat-caps': { en: 'Category: Headwear', th: 'หมวดหมู่: หมวก' },
+    'editorial-1': { en: 'Editorial: Campus Drop Vol. 02', th: 'เอดิทอเรียล: Campus Drop Vol. 02' },
+    'campaign-desktop': { en: 'Campaign banner, desktop', th: 'แบนเนอร์แคมเปญ เดสก์ท็อป' },
+    'campaign-mobile': { en: 'Campaign banner, mobile', th: 'แบนเนอร์แคมเปญ มือถือ' }
+  };
+
+  const isMac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+  const PASTE = isMac ? 'Cmd+V' : 'Ctrl+V';
+  const FP = ['0% 0%', '50% 0%', '100% 0%', '0% 50%', '50% 50%', '100% 50%', '0% 100%', '50% 100%', '100% 100%'];
+
+  const I18N = {
+    en: {
+      howto: `Drag a photo onto anything · hover + ${PASTE} to paste · click to choose a file`,
+      hint: `Drop an image, or paste with ${PASTE}`,
+      hintTouch: 'Tap to add a photo',
+      aria0: n => `${n}. No photo yet. Drag an image here, paste with ${PASTE}, or press Enter to choose a file.`,
+      aria1: n => `${n}. Replace photo. Drag an image here, paste with ${PASTE}, or press Enter to choose a file.`,
+      fpGroup: 'Focal point',
+      fpNames: ['top left', 'top', 'top right', 'left', 'center', 'right', 'bottom left', 'bottom', 'bottom right'],
+      fpAria: (n, p) => `Focal point for ${n}: ${p}`,
+      replace: 'Replace', remove: 'Remove',
+      uploading: 'Uploading photo…', done: 'Photo saved', removed: 'Photo removed',
+      notImage: 'That file isn’t an image. Use a JPG, PNG or WebP.',
+      tooBig: 'That file is over 25 MB. Choose a smaller image.',
+      read: 'Couldn’t read that image. Try a JPG, PNG or WebP.',
+      net: 'Upload failed — check your connection and try again. Your previous photo is unchanged.',
+      quota: 'Storage is full. Remove a photo or free some space, then try again.',
+      fail: 'Something went wrong. Your previous photo is unchanged.',
+      noTarget: 'Hover over a photo first, then paste.',
+      noFile: 'Drop an image file, not text or a link.',
+      saveFail: 'Couldn’t save the change. Try again.'
+    },
+    th: {
+      howto: `ลากรูปมาวางบนสินค้าได้เลย · ชี้เมาส์แล้วกด ${PASTE} เพื่อวาง · หรือคลิกเพื่อเลือกไฟล์`,
+      hint: `วางรูปที่นี่ หรือกด ${PASTE}`,
+      hintTouch: 'แตะเพื่อเพิ่มรูป',
+      aria0: n => `${n} ยังไม่มีรูป ลากรูปมาวาง กด ${PASTE} เพื่อวาง หรือกด Enter เพื่อเลือกไฟล์`,
+      aria1: n => `${n} เปลี่ยนรูป ลากรูปมาวาง กด ${PASTE} เพื่อวาง หรือกด Enter เพื่อเลือกไฟล์`,
+      fpGroup: 'จุดโฟกัส',
+      fpNames: ['บนซ้าย', 'บน', 'บนขวา', 'ซ้าย', 'กลาง', 'ขวา', 'ล่างซ้าย', 'ล่าง', 'ล่างขวา'],
+      fpAria: (n, p) => `จุดโฟกัสของ ${n}: ${p}`,
+      replace: 'เปลี่ยนรูป', remove: 'ลบรูป',
+      uploading: 'กำลังอัปโหลดรูป…', done: 'บันทึกรูปแล้ว', removed: 'ลบรูปแล้ว',
+      notImage: 'ไฟล์นี้ไม่ใช่รูปภาพ ใช้ JPG, PNG หรือ WebP',
+      tooBig: 'ไฟล์ใหญ่เกิน 25 MB เลือกรูปที่เล็กลง',
+      read: 'เปิดรูปนี้ไม่ได้ ลองใช้ JPG, PNG หรือ WebP',
+      net: 'อัปโหลดไม่สำเร็จ ตรวจสอบอินเทอร์เน็ตแล้วลองใหม่ รูปเดิมยังอยู่ครบ',
+      quota: 'พื้นที่จัดเก็บเต็ม ลบรูปหรือเคลียร์พื้นที่แล้วลองใหม่',
+      fail: 'เกิดข้อผิดพลาด รูปเดิมยังอยู่ครบ',
+      noTarget: 'ชี้เมาส์ไปที่รูปก่อน แล้วค่อยวาง',
+      noFile: 'ต้องลากไฟล์รูปภาพ ไม่ใช่ข้อความหรือลิงก์',
+      saveFail: 'บันทึกการเปลี่ยนแปลงไม่สำเร็จ ลองใหม่อีกครั้ง'
+    }
+  };
+
+  let lang = 'en';
+  try { lang = localStorage.getItem('unixa.lang') || (/^th/i.test(navigator.language) ? 'th' : 'en'); } catch (e) { lang = /^th/i.test(navigator.language) ? 'th' : 'en'; }
+  const T = () => I18N[lang];
+  const nameOf = id => (NAMES[id] || { en: id, th: id })[lang];
+
+  /* ---------------- toasts ---------------- */
+  const toastBox = document.getElementById('toasts');
+  function toast(kind, msg, ms) {
+    while (toastBox.children.length > 3) toastBox.firstChild.remove();
+    const el = document.createElement('div');
+    el.className = 'toast ' + kind;
+    if (kind === 'busy') { const s = document.createElement('i'); s.className = 'spin'; el.append(s); }
+    const t = document.createElement('span'); t.textContent = msg; el.append(t);
+    toastBox.append(el);
+    const close = () => el.remove();
+    if (kind !== 'busy') setTimeout(close, ms || (kind === 'err' ? 5200 : 3000));
+    return close;
+  }
+
+  /* ---------------- storage adapter ---------------- */
+  const photos = {};                 // id -> { url, width, height, focalPoint }
+  const urlCache = new Map();        // stored url -> renderable src
+  let dbp;
+  const openDb = () => dbp || (dbp = new Promise((res, rej) => {
+    const r = indexedDB.open('unixa-photos', 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('blobs');
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  }));
+  const idb = (mode, fn) => openDb().then(d => new Promise((res, rej) => {
+    const tx = d.transaction('blobs', mode);
+    const req = fn(tx.objectStore('blobs'));
+    tx.oncomplete = () => res(req && req.result);
+    tx.onerror = tx.onabort = () => rej(tx.error);
+  }));
+  const toDataUrl = b => new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = () => no(r.error); r.readAsDataURL(b); });
+  const netErr = () => Object.assign(new Error('net'), { code: 'net' });
+
+  const storage = {
+    async put(blob, id) {
+      if (CONFIG.uploadUrl) {
+        const fd = new FormData(); fd.append('file', blob, id + '.jpg');
+        const r = await fetch(CONFIG.uploadUrl, { method: 'POST', body: fd });
+        if (!r.ok) throw netErr();
+        const j = await r.json();
+        if (!j || !j.url) throw netErr();
+        return j.url;
+      }
+      const key = id + '-' + Date.now();
+      await idb('readwrite', s => s.put(blob, key));
+      const url = 'idb://' + key;
+      urlCache.set(url, await toDataUrl(blob));
+      return url;
+    },
+    async del(url) {
+      if (!url || !url.startsWith('idb://')) return;
+      try { await idb('readwrite', s => s.delete(url.slice(6))); } catch (e) {}
+      urlCache.delete(url);
+    },
+    async resolve(url) {
+      if (!url.startsWith('idb://')) return url;
+      if (urlCache.has(url)) return urlCache.get(url);
+      const b = await idb('readonly', s => s.get(url.slice(6)));
+      if (!b) return null;
+      const o = await toDataUrl(b); urlCache.set(url, o); return o;
+    }
+  };
+
+  const readLS = () => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { return {}; } };
+  async function saveRecord(id, photo) {
+    if (CONFIG.patchProduct) {
+      const r = await fetch(CONFIG.patchProduct(id), { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ photo }) });
+      if (!r.ok) throw netErr();
+      return;
+    }
+    const all = readLS();
+    if (photo) all[id] = photo; else delete all[id];
+    localStorage.setItem(KEY, JSON.stringify(all));
+  }
+
+  /* ---------------- encode: downscale, flatten alpha, JPEG ---------------- */
+  async function encode(file) {
+    let bmp;
+    try { bmp = await createImageBitmap(file, { imageOrientation: 'from-image' }); }
+    catch (e) {
+      bmp = await new Promise((ok, no) => {
+        const i = new Image();
+        i.onload = () => ok(i);
+        i.onerror = () => no(Object.assign(new Error('read'), { code: 'read' }));
+        toDataUrl(file).then(u => { i.src = u; }, () => no(Object.assign(new Error('read'), { code: 'read' })));
+      });
+    }
+    const sw = bmp.width || bmp.naturalWidth, sh = bmp.height || bmp.naturalHeight;
+    if (!sw || !sh) throw Object.assign(new Error('read'), { code: 'read' });
+    const k = Math.min(1, MAX_EDGE / Math.max(sw, sh));
+    const w = Math.round(sw * k), h = Math.round(sh * k);
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    const x = c.getContext('2d');
+    x.fillStyle = '#fff'; x.fillRect(0, 0, w, h);
+    x.imageSmoothingQuality = 'high';
+    x.drawImage(bmp, 0, 0, w, h);
+    if (bmp.close) bmp.close();
+    const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', QUALITY));
+    if (!blob) throw Object.assign(new Error('read'), { code: 'read' });
+    return { blob, w, h };
+  }
+
+  /* ---------------- state ---------------- */
+  const seq = {}, busy = new Set();
+  const isImg = f => f && /^image\//.test(f.type);
+
+  function errMsg(e) {
+    if (e && e.code === 'read') return T().read;
+    if (e && (e.name === 'QuotaExceededError' || e.code === 'quota')) return T().quota;
+    if (e && (e.code === 'net' || e.name === 'TypeError')) return T().net;
+    return T().fail;
+  }
+
+  async function processFile(id, file) {
+    if (!isImg(file)) return toast('err', T().notImage);
+    if (file.size > MAX_BYTES) return toast('err', T().tooBig);
+    const mine = seq[id] = (seq[id] || 0) + 1;
+    busy.add(id); paint(id);
+    const closeBusy = toast('busy', T().uploading);
+    let url = null;
+    try {
+      const { blob, w, h } = await encode(file);
+      url = await storage.put(blob, id);
+      const photo = { url, width: w, height: h, focalPoint: '50% 50%' };
+      await saveRecord(id, photo);
+      if (mine !== seq[id]) { storage.del(url); return; }
+      const old = photos[id];
+      photos[id] = photo;
+      if (old && old.url !== url) storage.del(old.url);
+      toast('ok', T().done);
+    } catch (e) {
+      if (url) storage.del(url);
+      if (mine === seq[id]) toast('err', errMsg(e));
+    } finally {
+      closeBusy();
+      if (mine === seq[id]) { busy.delete(id); paint(id); }
+    }
+  }
+
+  async function removePhoto(id) {
+    const old = photos[id]; if (!old) return;
+    seq[id] = (seq[id] || 0) + 1; busy.delete(id);
+    delete photos[id]; paint(id);
+    try { await saveRecord(id, null); storage.del(old.url); toast('ok', T().removed); }
+    catch (e) { photos[id] = old; paint(id); toast('err', T().saveFail); }
+  }
+
+  async function setFocal(id, fp) {
+    const p = photos[id]; if (!p || p.focalPoint === fp) return;
+    const prev = p.focalPoint;
+    photos[id] = Object.assign({}, p, { focalPoint: fp }); paint(id);
+    try { await saveRecord(id, photos[id]); }
+    catch (e) { if (photos[id]) photos[id].focalPoint = prev; paint(id); toast('err', T().saveFail); }
+  }
+
+  /* ---------------- frame component ---------------- */
+  const picker = document.getElementById('picker');
+  function pick(id) { picker.dataset.id = id; picker.value = ''; picker.click(); }
+  picker.addEventListener('change', () => {
+    const f = picker.files && picker.files[0], id = picker.dataset.id;
+    if (f && id) processFile(id, f);
+  });
+
+  function mount(pf) {
+    const scope = pf.closest('[data-photo-id]');
+    const id = scope.dataset.photoId;
+    pf.dataset.id = id;
+    const ph = pf.querySelector(':scope > .ph');
+    const overs = [...pf.querySelectorAll(':scope > .over')];
+
+    const fw = document.createElement('div'); fw.className = 'fw';
+    const frame = document.createElement('div');
+    frame.className = 'frame r' + pf.dataset.ratio;
+    frame.tabIndex = 0; frame.setAttribute('role', 'button');
+    frame.append(ph);
+    if (pf.dataset.hint !== 'off') {
+      const hint = document.createElement('div'); hint.className = 'hint';
+      hint.innerHTML = '<span class="h-mouse"></span><span class="h-touch"></span>';
+      frame.append(hint);
+    }
+    const spin = document.createElement('div'); spin.className = 'busy'; spin.hidden = true;
+    spin.innerHTML = '<i class="spin"></i>';
+    frame.append(spin);
+    fw.append(frame, ...overs);
+    pf.append(fw);
+
+    frame.addEventListener('click', () => pick(id));
+    frame.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(id); }
+    });
+
+    if (pf.dataset.tools !== 'off') {
+      const tools = document.createElement('div'); tools.className = 'tools'; tools.hidden = true;
+      const grid = document.createElement('div'); grid.className = 'fp'; grid.setAttribute('role', 'group');
+      FP.forEach(v => { const b = document.createElement('button'); b.type = 'button'; b.dataset.fp = v; grid.append(b); });
+      const side = document.createElement('div'); side.className = 'tl-side';
+      side.innerHTML = '<span class="fp-cap"></span><div class="tl-actions"><button type="button" class="tl replace"></button><button type="button" class="tl remove"></button></div>';
+      tools.append(grid, side);
+      tools.addEventListener('click', e => {
+        const b = e.target.closest('button'); if (!b) return;
+        if (b.dataset.fp) setFocal(id, b.dataset.fp);
+        else if (b.classList.contains('replace')) pick(id);
+        else if (b.classList.contains('remove')) removePhoto(id);
+      });
+      pf.append(tools);
+    }
+  }
+
+  function render(pf) {
+    const id = pf.dataset.id, p = photos[id], name = nameOf(id), t = T();
+    const frame = pf.querySelector('.frame');
+    frame.classList.toggle('has', !!p);
+    frame.setAttribute('aria-label', p ? t.aria1(name) : t.aria0(name));
+    const hm = frame.querySelector('.h-mouse'), ht = frame.querySelector('.h-touch');
+    if (hm) { hm.textContent = t.hint; ht.textContent = t.hintTouch; frame.querySelector('.hint').hidden = !!p; }
+    frame.querySelector('.busy').hidden = !busy.has(id);
+    frame.setAttribute('aria-busy', busy.has(id) ? 'true' : 'false');
+
+    let img = frame.querySelector('.pimg');
+    if (p) {
+      if (!img) { img = new Image(); img.className = 'pimg'; img.decoding = 'async'; frame.insertBefore(img, frame.querySelector('.ph').nextSibling); }
+      img.alt = name; img.width = p.width; img.height = p.height;
+      img.style.objectPosition = p.focalPoint;
+      if (img.dataset.u !== p.url) {
+        img.dataset.u = p.url;
+        storage.resolve(p.url).then(src => { if (src && img.dataset.u === p.url) img.src = src; }).catch(() => {});
+      }
+    } else if (img) img.remove();
+
+    const tools = pf.querySelector('.tools');
+    if (tools) {
+      tools.hidden = !p;
+      tools.querySelector('.fp').setAttribute('aria-label', t.fpGroup + ': ' + name);
+      tools.querySelector('.fp-cap').textContent = t.fpGroup;
+      tools.querySelectorAll('.fp button').forEach((b, i) => {
+        b.setAttribute('aria-label', t.fpAria(name, t.fpNames[i]));
+        b.title = t.fpNames[i];
+        b.setAttribute('aria-pressed', p && p.focalPoint === b.dataset.fp ? 'true' : 'false');
+      });
+      const rp = tools.querySelector('.replace'), rm = tools.querySelector('.remove');
+      rp.textContent = t.replace; rm.textContent = t.remove;
+      rp.setAttribute('aria-label', t.replace + ': ' + name);
+      rm.setAttribute('aria-label', t.remove + ': ' + name);
+    }
+  }
+
+  function paint(id) { document.querySelectorAll('.pf').forEach(pf => { if (pf.dataset.id === id) render(pf); }); }
+  function paintAll() { document.querySelectorAll('.pf').forEach(render); }
+
+  /* ---------------- current target: hover / focus ---------------- */
+  const cur = { hover: null, focus: null, last: 'hover' };
+  const scopeId = el => { const s = el && el.closest && el.closest('[data-photo-id]'); return s ? s.dataset.photoId : null; };
+  const target = () => cur.last === 'hover' ? (cur.hover || cur.focus) : (cur.focus || cur.hover);
+  document.addEventListener('mouseover', e => { const id = scopeId(e.target); if (id) { cur.hover = id; cur.last = 'hover'; } });
+  document.addEventListener('mouseout', e => { if (!scopeId(e.relatedTarget)) cur.hover = null; });
+  document.addEventListener('focusin', e => { const id = scopeId(e.target); if (id) { cur.focus = id; cur.last = 'focus'; } });
+  document.addEventListener('focusout', e => { if (!scopeId(e.relatedTarget)) cur.focus = null; });
+
+  /* ---------------- drag & drop ---------------- */
+  const hasFiles = e => e.dataTransfer && [...e.dataTransfer.types].includes('Files');
+  let dragEl = null;
+  const clearDrag = () => { if (dragEl) { dragEl.classList.remove('dragging'); dragEl = null; } };
+  function onDrag(e) {
+    if (!hasFiles(e)) return;
+    e.preventDefault();
+    const s = e.target.closest && e.target.closest('[data-photo-id]');
+    if (s !== dragEl) { clearDrag(); if (s) { dragEl = s; s.classList.add('dragging'); } }
+    e.dataTransfer.dropEffect = s ? 'copy' : 'none';
+  }
+  document.addEventListener('dragenter', onDrag);
+  document.addEventListener('dragover', onDrag);
+  document.addEventListener('dragleave', e => { if (!e.relatedTarget) clearDrag(); });
+  document.addEventListener('dragend', clearDrag);
+  document.addEventListener('drop', e => {
+    if (!hasFiles(e)) return;
+    e.preventDefault(); clearDrag();
+    const s = e.target.closest && e.target.closest('[data-photo-id]');
+    if (!s) return;
+    const files = [...e.dataTransfer.files];
+    const f = files.find(isImg);
+    if (!f) return toast('err', files.length ? T().notImage : T().noFile);
+    processFile(s.dataset.photoId, f);
+  });
+
+  /* ---------------- paste (Ctrl/Cmd+V) ---------------- */
+  document.addEventListener('paste', e => {
+    const a = document.activeElement;
+    if (a && (a.matches('input,textarea,select') || a.isContentEditable)) return;
+    const cd = e.clipboardData; if (!cd) return;
+    let f = [...cd.files].find(isImg);
+    if (!f) for (const it of cd.items || []) { if (it.kind === 'file' && /^image\//.test(it.type)) { f = it.getAsFile(); break; } }
+    if (!f) return;
+    e.preventDefault();
+    const id = target();
+    if (!id) return toast('info', T().noTarget);
+    processFile(id, f);
+  });
+
+  /* ---------------- language ---------------- */
+  const howto = document.getElementById('howto'), langBtn = document.getElementById('lang');
+  function applyLang() {
+    document.documentElement.lang = lang;
+    howto.textContent = T().howto;
+    langBtn.innerHTML = lang === 'th' ? '<b>TH</b> / EN' : 'TH / <b>EN</b>';
+    paintAll();
+  }
+  langBtn.addEventListener('click', () => {
+    lang = lang === 'th' ? 'en' : 'th';
+    try { localStorage.setItem('unixa.lang', lang); } catch (e) {}
+    applyLang();
+  });
+
+  /* ---------------- boot ---------------- */
+  document.querySelectorAll('.pf').forEach(mount);
+  Object.assign(photos, CONFIG.initialPhotos, readLS());
+  applyLang();
+})();
+</script>
+</body>
+</html>
