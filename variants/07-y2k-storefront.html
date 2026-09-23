@@ -23,83 +23,58 @@
 <div id="root"><p class="boot">UNIXA — loading the grid…</p></div>
 <noscript><p class="boot">UNIXA needs JavaScript to open the store.</p></noscript>
 <script>
-/* Seed photography — writes straight into this app's own IndexedDB ("unixa-y2k-photos": a
-   "blobs" store keyed by a random id holding the raw image, and a "records" store keyed by
-   product id holding {url:"idb://<blobKey>", width, height, focalPoint}) — exactly the shape
-   a real paste/drop upload produces. Runs once per browser; a real upload always wins. */
+/* Seed photography — drives the app's own real "paste a photo" path (hover the slot, then
+   paste) for every product slot that doesn't have a photo yet, so it goes through the same
+   optimistic blob-preview + persistence the app already uses for a genuine upload. No reload,
+   no reaching into its storage schema directly. A real upload always wins (skipped if present). */
 (function(){
   var ASSIGN = {
-    "UX-2601": {file:"05-leopard-signal-tie.png", w:1200, h:1200},
-    "UX-2602": {file:"07-rivet-visor.png", w:736, h:736},
-    "UX-2603": {file:"30-rodeo-rivet-zip.png", w:736, h:920},
-    "UX-2604": {file:"19-ivory-cross-highs.png", w:736, h:736},
-    "UX-2605": {file:"23-utility-ruin-jacket.png", w:736, h:832},
-    "UX-2606": {file:"11-rope-cross-boots.png", w:736, h:920},
-    "UX-2607": {file:"31-toxic-spider-knit.png", w:736, h:1104},
-    "UX-2608": {file:"21-chrome-snow-boots.png", w:750, h:1000},
-    "UX-2609": {file:"16-spiked-static-cap.png", w:1024, h:1006},
-    "UX-2610": {file:"13-chain-laced-dc.png", w:1200, h:1500},
-    "UX-2611": {file:"25-bane-blade-shades.png", w:736, h:920},
-    "UX-2612": {file:"15-wired-portrait-denim.png", w:1080, h:1350},
-    "UX-2613": {file:"32-indigo-spider-knit.png", w:736, h:1104},
-    "UX-2614": {file:"09-ghost-zebra-zip.png", w:736, h:981},
-    "UX-2615": {file:"20-cloudbound-boots.png", w:1000, h:1333},
-    "UX-2616": {file:"08-orbit-spike-shades.png", w:450, h:450},
-    "UX-2617": {file:"29-tiger-pocket-shorts.png", w:736, h:1308},
-    "UX-2618": {file:"12-nocturne-puffer-mules.png", w:800, h:800},
-    "UX-2619": {file:"10-fog-camo-bomber.png", w:736, h:920}
+    "UX-2601": "05-leopard-signal-tie.png", "UX-2602": "07-rivet-visor.png", "UX-2603": "30-rodeo-rivet-zip.png",
+    "UX-2604": "19-ivory-cross-highs.png", "UX-2605": "23-utility-ruin-jacket.png", "UX-2606": "11-rope-cross-boots.png",
+    "UX-2607": "31-toxic-spider-knit.png", "UX-2608": "21-chrome-snow-boots.png", "UX-2609": "16-spiked-static-cap.png",
+    "UX-2610": "13-chain-laced-dc.png", "UX-2611": "25-bane-blade-shades.png", "UX-2612": "15-wired-portrait-denim.png",
+    "UX-2613": "32-indigo-spider-knit.png", "UX-2614": "09-ghost-zebra-zip.png", "UX-2615": "20-cloudbound-boots.png",
+    "UX-2616": "08-orbit-spike-shades.png", "UX-2617": "29-tiger-pocket-shorts.png", "UX-2618": "12-nocturne-puffer-mules.png",
+    "UX-2619": "10-fog-camo-bomber.png"
   };
-  try { if (localStorage.getItem("unixa-y2k-photo-seed-v1")) return; } catch(e) { return; }
-  function openDb(){
-    return new Promise(function(res,rej){
-      var r = indexedDB.open("unixa-y2k-photos", 1);
-      r.onupgradeneeded = function(){
-        var db = r.result;
-        if(!db.objectStoreNames.contains("blobs")) db.createObjectStore("blobs");
-        if(!db.objectStoreNames.contains("records")) db.createObjectStore("records");
-      };
-      r.onsuccess = function(){ res(r.result); };
-      r.onerror = function(){ rej(r.error); };
-    });
+  var inflight = new WeakSet();
+  var fileCache = {};
+  function getFile(name){
+    return fileCache[name] || (fileCache[name] = fetch("../assets/user-catalog/" + name)
+      .then(function(r){ return r.blob(); })
+      .then(function(blob){ return new File([blob], name, {type: blob.type || "image/png"}); }));
   }
-  function get(db, store, key){
-    return new Promise(function(res,rej){
-      var tx = db.transaction(store, "readonly");
-      var rq = tx.objectStore(store).get(key);
-      rq.onsuccess = function(){ res(rq.result); }; rq.onerror = function(){ rej(rq.error); };
-    });
+  function seedSlot(slot){
+    var pid = slot.getAttribute("data-photo-target");
+    var name = ASSIGN[pid];
+    if (!name || slot.querySelector("img") || inflight.has(slot)) return;
+    inflight.add(slot);
+    setTimeout(function(){ inflight.delete(slot); }, 350);
+    slot.dispatchEvent(new MouseEvent("mouseover", {bubbles:true}));
+    slot.dispatchEvent(new MouseEvent("mousemove", {bubbles:true}));
+    getFile(name).then(function(file){
+      var dt = new DataTransfer(); dt.items.add(file);
+      var evt;
+      try { evt = new ClipboardEvent("paste", {bubbles:true, cancelable:true, clipboardData:dt}); }
+      catch(e){ evt = new Event("paste", {bubbles:true, cancelable:true}); Object.defineProperty(evt, "clipboardData", {value:dt}); }
+      document.dispatchEvent(evt);
+    }).catch(function(){});
   }
-  function put(db, store, key, val){
-    return new Promise(function(res,rej){
-      var tx = db.transaction(store, "readwrite");
-      tx.objectStore(store).put(val, key);
-      tx.oncomplete = res; tx.onerror = function(){ rej(tx.error); };
-    });
+  function sweep(){
+    document.querySelectorAll("[data-photo-target]").forEach(seedSlot);
   }
-  function uuid(){
-    if (crypto && crypto.randomUUID) return crypto.randomUUID();
-    return "seed-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2);
+  var interval = null, tries = 0;
+  function pollAWhile(){
+    tries = 0;
+    if (interval) clearInterval(interval);
+    interval = setInterval(function(){
+      sweep();
+      if (++tries >= 12) clearInterval(interval);
+    }, 400);
   }
-  (async function seed(){
-    var db;
-    try { db = await openDb(); } catch(e) { return; }
-    var any = false;
-    for (var pid in ASSIGN) {
-      try {
-        var existing = await get(db, "records", pid);
-        if (existing) continue;
-        var a = ASSIGN[pid];
-        var resp = await fetch("../assets/user-catalog/" + a.file);
-        var blob = await resp.blob();
-        var blobKey = uuid();
-        await put(db, "blobs", blobKey, blob);
-        await put(db, "records", pid, {url:"idb://" + blobKey, width:a.w, height:a.h, focalPoint:"50% 50%"});
-        any = true;
-      } catch(e) {}
-    }
-    try { localStorage.setItem("unixa-y2k-photo-seed-v1", "1"); } catch(e) {}
-    if (any) location.reload();
-  })();
+  pollAWhile();
+  new MutationObserver(function(){ sweep(); }).observe(document.body, {childList:true, subtree:true});
+  window.addEventListener("hashchange", pollAWhile);
 })();
 </script>
 <script>
