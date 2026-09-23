@@ -580,7 +580,18 @@ patchProduct:  id =&gt; `https://api.example.com/products/${id}`  // PATCH { "ph
   const CONFIG = {
     uploadUrl: null,
     patchProduct: null,
-    initialPhotos: {}            // { [id]: { url, width, height, focalPoint } } from your API
+    initialPhotos: {              // seed photography — shown until someone uploads a real replacement
+      'p-hoodie': {url:'../assets/user-catalog/15-wired-portrait-denim.png',width:1080,height:1350,focalPoint:'50% 50%'},
+      'p-sneaker': {url:'../assets/user-catalog/25-bane-blade-shades.png',width:736,height:920,focalPoint:'50% 50%'},
+      'p-cap': {url:'../assets/user-catalog/10-fog-camo-bomber.png',width:736,height:920,focalPoint:'50% 50%'},
+      'p-jacket': {url:'../assets/user-catalog/03-saint-terrain-jeans.png',width:1152,height:2048,focalPoint:'50% 50%'},
+      'p-tote': {url:'../assets/user-catalog/28-cowhide-fleece-trousers.png',width:736,height:898,focalPoint:'50% 50%'},
+      'p-tee': {url:'../assets/user-catalog/08-orbit-spike-shades.png',width:450,height:450,focalPoint:'50% 50%'},
+      'f-varsity': {url:'../assets/user-catalog/04-decode-canvas-cap.png',width:736,height:920,focalPoint:'50% 50%'},
+      'f-bucket': {url:'../assets/user-catalog/13-chain-laced-dc.png',width:1200,height:1500,focalPoint:'50% 50%'},
+      'f-runner': {url:'../assets/user-catalog/09-ghost-zebra-zip.png',width:736,height:981,focalPoint:'50% 50%'},
+      'f-archive': {url:'../assets/user-catalog/32-indigo-spider-knit.png',width:736,height:1104,focalPoint:'50% 50%'}
+    }            // { [id]: { url, width, height, focalPoint } } from your API
   };
   const MAX_EDGE = 1600, QUALITY = 0.86, MAX_BYTES = 25 * 1024 * 1024;
   const KEY = 'unixa.photos.v1';

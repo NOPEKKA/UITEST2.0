@@ -57,6 +57,41 @@
 <script src="https://57ba56ad-b17a-4bc1-9d9c-76e275e7810e.frame.claudeusercontent.com/_f/1789914316-c1ca/v-checkout.js"></script>
 <script src="https://57ba56ad-b17a-4bc1-9d9c-76e275e7810e.frame.claudeusercontent.com/_f/1789914316-c1ca/v-about.js"></script>
 <script src="https://57ba56ad-b17a-4bc1-9d9c-76e275e7810e.frame.claudeusercontent.com/_f/1789914316-c1ca/photos.js"></script>
+<script>
+/* Seed photography — shown until someone uploads a real replacement. */
+(function (UX) {
+  if (!UX) return;
+  var DEFAULT_PHOTOS = {
+    p01: {url:"../assets/user-catalog/24-crimson-circuit-bomber.png",width:1152,height:2048},
+    p02: {url:"../assets/user-catalog/06-cheetah-vault-bag.png",width:736,height:736},
+    p03: {url:"../assets/user-catalog/12-nocturne-puffer-mules.png",width:800,height:800},
+    p04: {url:"../assets/user-catalog/30-rodeo-rivet-zip.png",width:736,height:920},
+    p05: {url:"../assets/user-catalog/07-rivet-visor.png",width:736,height:736},
+    p06: {url:"../assets/user-catalog/22-fraywire-denim.png",width:1080,height:1411},
+    p07: {url:"../assets/user-catalog/09-ghost-zebra-zip.png",width:736,height:981},
+    p08: {url:"../assets/user-catalog/23-utility-ruin-jacket.png",width:736,height:832},
+    p09: {url:"../assets/user-catalog/27-winged-script-cap.png",width:736,height:1104},
+    p10: {url:"../assets/user-catalog/21-chrome-snow-boots.png",width:750,height:1000},
+    p11: {url:"../assets/user-catalog/03-saint-terrain-jeans.png",width:1152,height:2048},
+    p12: {url:"../assets/user-catalog/20-cloudbound-boots.png",width:1000,height:1333},
+    p13: {url:"../assets/user-catalog/31-toxic-spider-knit.png",width:736,height:1104},
+    p14: {url:"../assets/user-catalog/18-swag-cut-gloves.png",width:736,height:920},
+    p15: {url:"../assets/user-catalog/08-orbit-spike-shades.png",width:450,height:450},
+    p16: {url:"../assets/user-catalog/25-bane-blade-shades.png",width:736,height:920},
+    p17: {url:"../assets/user-catalog/15-wired-portrait-denim.png",width:1080,height:1350},
+    p18: {url:"../assets/user-catalog/28-cowhide-fleece-trousers.png",width:736,height:898},
+    p19: {url:"../assets/user-catalog/05-leopard-signal-tie.png",width:1200,height:1200},
+    p20: {url:"../assets/user-catalog/11-rope-cross-boots.png",width:736,height:920}
+  };
+  var real = UX.photoOf;
+  UX.photoOf = function (id) {
+    var r = real ? real(id) : null;
+    if (r) return r;
+    var fb = DEFAULT_PHOTOS[id];
+    return fb ? {url: fb.url, width: fb.width, height: fb.height, focalPoint: "50% 50%"} : null;
+  };
+})(window.UX);
+</script>
 <script src="https://57ba56ad-b17a-4bc1-9d9c-76e275e7810e.frame.claudeusercontent.com/_f/1789914316-c1ca/app.js"></script>
 </body>
 </html>

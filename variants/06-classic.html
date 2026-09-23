@@ -974,8 +974,27 @@ async function patchRecord(slot, photo){
   }catch(e){}
 }
 
+/* Seed photography — shown until someone uploads a real replacement. */
+const DEFAULT_PHOTOS = {
+  "1": {url:"../assets/user-catalog/03-saint-terrain-jeans.png",width:1152,height:2048,focalPoint:"50% 50%"},
+  "2": {url:"../assets/user-catalog/24-crimson-circuit-bomber.png",width:1152,height:2048,focalPoint:"50% 50%"},
+  "3": {url:"../assets/user-catalog/15-wired-portrait-denim.png",width:1080,height:1350,focalPoint:"50% 50%"},
+  "4": {url:"../assets/user-catalog/18-swag-cut-gloves.png",width:736,height:920,focalPoint:"50% 50%"},
+  "5": {url:"../assets/user-catalog/04-decode-canvas-cap.png",width:736,height:920,focalPoint:"50% 50%"},
+  "6": {url:"../assets/user-catalog/13-chain-laced-dc.png",width:1200,height:1500,focalPoint:"50% 50%"},
+  "7": {url:"../assets/user-catalog/32-indigo-spider-knit.png",width:736,height:1104,focalPoint:"50% 50%"},
+  "8": {url:"../assets/user-catalog/29-tiger-pocket-shorts.png",width:736,height:1308,focalPoint:"50% 50%"},
+  "9": {url:"../assets/user-catalog/10-fog-camo-bomber.png",width:736,height:920,focalPoint:"50% 50%"},
+  "10": {url:"../assets/user-catalog/21-chrome-snow-boots.png",width:750,height:1000,focalPoint:"50% 50%"},
+  "11": {url:"../assets/user-catalog/20-cloudbound-boots.png",width:1000,height:1333,focalPoint:"50% 50%"},
+  "12": {url:"../assets/user-catalog/12-nocturne-puffer-mules.png",width:800,height:800,focalPoint:"50% 50%"},
+  "13": {url:"../assets/user-catalog/19-ivory-cross-highs.png",width:736,height:736,focalPoint:"50% 50%"},
+  "14": {url:"../assets/user-catalog/07-rivet-visor.png",width:736,height:736,focalPoint:"50% 50%"},
+  "15": {url:"../assets/user-catalog/26-midnight-spike-ushanka.png",width:736,height:920,focalPoint:"50% 50%"},
+  "16": {url:"../assets/user-catalog/02-liberty-spill-denim.png",width:736,height:918,focalPoint:"50% 50%"}
+};
 function loadPhotos(){
-  P.forEach(p => { p.photo = null; });
+  P.forEach(p => { p.photo = DEFAULT_PHOTOS[String(p.id)] || null; });
   let saved = {};
   try{ saved = JSON.parse(localStorage.getItem(PKEY) || "{}"); }catch(e){}
   for(const slot in saved){ const h = slotHolder(slot); if(h) h.o[h.k] = saved[slot]; }
